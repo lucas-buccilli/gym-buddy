@@ -31,3 +31,14 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+jar {
+    enabled=true
+    archiveClassifier.set("")
+    manifest {
+        attributes(
+                'Class-Path': configurations.runtimeClasspath.files.collect{it.getName()}.join(' '),
+            'Main-Class': 'com.example.gymbuddy.GymBuddyApplication')
+    }
+}
+
