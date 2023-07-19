@@ -1,23 +1,40 @@
 version: '3'
 services:
   web-app:
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 80:80
+      - '8001:80'
     environment:
-      MYSQL_HOST: mysql
+      MYSQL_HOST: db
       MYSQL_USER: admin
-      MYSQL_PASSWORD: gymbuddyPassword
+      MYSQL_PASSWORD: 111
       MYSQL_DB: gymbuddy
 
-  mysql:
+  db:
     image: mysql
+    restart: always
+    command:
+      - --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
     volumes:
-      - /mysql-data/var/lib/mysql
+      - ./db-data:/mysql-data/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: gymbuddyPassword
+      MYSQL_ROOT_PASSWORD: 111
       MYSQL_DATABASE: gymbuddy
+      MYSQL_USER: admin
+      MYSQL_PASSOWRD: 111
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8080:8080'
+
+volumes:
+  db_data:
 
