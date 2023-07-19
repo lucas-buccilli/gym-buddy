@@ -1,14 +1,15 @@
 buildscript {
     dependencies {
-        classpath 'org.flywaydb:flyway-mysql:9.20.0'
+        classpath 'org.flywaydb:flyway-mysql:9.19.4'
+        classpath 'org.flywaydb:flyway-core:9.19.4'
     }
 }
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.1.1'
+    id 'org.springframework.boot' version '3.0.8'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.flywaydb.flyway' version '9.20.1'
+    id 'org.flywaydb.flyway' version '9.19.4'
 }
 
 group = 'com.example'
@@ -29,13 +30,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core:9.20.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.0.8'
     implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.8'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    implementation 'org.flywaydb:flyway-core:9.19.4'
+    implementation 'org.flywaydb:flyway-mysql:9.19.4'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.8'
 }
 
 tasks.named('test') {
@@ -50,10 +53,4 @@ jar {
                 'Class-Path': configurations.runtimeClasspath.files.collect{it.getName()}.join(' '),
             'Main-Class': 'com.example.gymbuddy.GymBuddyApplication')
     }
-}
-
-flyway {
-    url = 'jdbc:mysql://127.0.0.1:3306/gymbuddy'
-    user = "root"
-    password = "111"
 }
