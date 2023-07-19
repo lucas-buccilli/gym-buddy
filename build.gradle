@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath 'org.flywaydb:flyway-mysql:9.20.0'
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.1'
@@ -26,6 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core:9.20.1'
+    implementation 'mysql:mysql-connector-java:8.0.33'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -46,7 +53,7 @@ jar {
 }
 
 flyway {
-    url = 'jbdc:mysql://localhost:3000/gymbuddy'
-    user = "admin"
-    password = "gymbuddyPassword"
+    url = 'jdbc:mysql://127.0.0.1:3306/gymbuddy'
+    user = "root"
+    password = "111"
 }

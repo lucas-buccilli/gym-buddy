@@ -13,9 +13,14 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: 111
       MYSQL_DB: gymbuddy
+      #SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gymbuddy
+      #SPRING_DATASOURCE_USERNAME: admin
+      #SPRING_DATASOURCE_PASSWORD: 111
+      #SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   db:
     image: mysql
+    container_name: db
     restart: always
     command:
       - --default-authentication-plugin=mysql_native_password
