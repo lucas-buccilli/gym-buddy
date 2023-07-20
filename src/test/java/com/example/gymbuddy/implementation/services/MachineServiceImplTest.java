@@ -30,7 +30,7 @@ class MachineServiceImplTest {
     @Test
     void shouldFindAll() {
         var machines = List.of(new Machine());
-        var machineDtos = List.of(new MachineDto());
+        var machineDtos = List.of(MachineDto.builder().build());
 
         when(machineRepository.findAll()).thenReturn(machines);
         when(modelMapper.map(eq(machines.get(0)), eq(MachineDto.class))).thenReturn(machineDtos.get(0));
