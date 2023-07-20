@@ -1,6 +1,6 @@
-package com.example.gymbuddy.repositories;
+package com.example.gymbuddy.implementation.repositories;
 
-import com.example.gymbuddy.entities.Machine;
+import com.example.gymbuddy.infrastructure.entities.Machine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
