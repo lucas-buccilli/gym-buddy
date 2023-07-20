@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 class MachineServiceImplTest {
     @InjectMocks
     private MachineServiceImpl machineService;
-    
+     
     @Mock
     private MachineRepository machineRepository;
     @Mock
