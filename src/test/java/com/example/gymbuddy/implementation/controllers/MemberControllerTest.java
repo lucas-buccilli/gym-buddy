@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
-public class MemberControllerTest {
+class MemberControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

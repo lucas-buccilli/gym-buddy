@@ -29,7 +29,7 @@ public class MemberServiceImplTest {
     private ModelMapper modelMapper;
 
     @Test
-    void shouldFindAll() {
+    public void shouldFindAll() {
         var members = List.of(new Member());
         var memberDtos = List.of(MemberDto.builder().build());
 
@@ -39,5 +39,10 @@ public class MemberServiceImplTest {
         assertEquals(memberDtos, memberService.findAll());
         verify(memberRepository).findAll();
         verify(modelMapper).map(eq(members.get(0)), eq(MemberDto.class));
+    }
+
+    @Test
+    public void shouldAddMember() {
+
     }
 }
