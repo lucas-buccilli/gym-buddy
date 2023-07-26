@@ -22,5 +22,4 @@ public class MemberDto {
     @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
             message = "The phone number must be valid.")
     private String phoneNumber;
-
 }

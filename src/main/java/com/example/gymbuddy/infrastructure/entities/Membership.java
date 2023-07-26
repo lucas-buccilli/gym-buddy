@@ -5,10 +5,15 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Machine {
+public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "id")
+    private int id;
 
-    private String name;
+    @Column(name = "member_id")
+    private int memberId;
+
+    @Column(name = "status")
+    private boolean active;
 }
