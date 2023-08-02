@@ -11,9 +11,12 @@ public class Membership {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "member_id")
-    private int memberId;
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "status")
     private boolean active;
+
+    //startedAt datetime
 }
