@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MachineService {
     List<MachineDto> findAll();
+
+    MachineDto addMachine(MachineDto machineDto);
 }

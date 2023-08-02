@@ -2,15 +2,13 @@ package com.example.gymbuddy.infrastructure.models.dtos;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberDto {
-    @Setter(AccessLevel.NONE)
     private Integer id;
 
     @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
