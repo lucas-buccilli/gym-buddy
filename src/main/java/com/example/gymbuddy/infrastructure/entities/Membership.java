@@ -8,8 +8,7 @@ import lombok.Data;
 public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "member_id")

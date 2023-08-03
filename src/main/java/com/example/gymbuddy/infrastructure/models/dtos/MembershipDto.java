@@ -1,5 +1,6 @@
 package com.example.gymbuddy.infrastructure.models.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import jdk.jfr.BooleanFlag;
 import lombok.*;
 
@@ -10,9 +11,10 @@ import lombok.*;
 public class MembershipDto {
     private Integer id;
 
-    @NonNull
+    @NotNull
     private Integer memberId;
 
     @BooleanFlag
+    @NotNull
     private boolean active;
 }

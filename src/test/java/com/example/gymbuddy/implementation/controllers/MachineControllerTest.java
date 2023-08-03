@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,12 +46,14 @@ class MachineControllerTest {
 
     @Test
     public void shouldAddMachine() throws Exception {
+        var machineDto = MachineDto.builder().name("name").build();
+        when(machineService.addMachine(any())).thenReturn(machineDto);
         mockMvc.perform(
                         post("/machines")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(MachineDto.builder().build())))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("TODO"));
+                                .content(objectMapper.writeValueAsString(machineDto)))
+                                .andDo(print())
+                                .andExpect(status().isCreated())
+                                .andExpect(content().string(objectMapper.writeValueAsString(machineDto)));
     }
 }
