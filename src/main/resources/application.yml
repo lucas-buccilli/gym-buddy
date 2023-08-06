@@ -22,3 +22,6 @@ spring:
     schemas: gymbuddy
     locations: classpath:db/migration
     driver-class-name: com.mysql.cj.jdbc.Driver
+logging:
+  level:
+    com.example.gymbuddy: DEBUG

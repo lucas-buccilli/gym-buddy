@@ -4,6 +4,7 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.MachineService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ public class MachineController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addMachine(@Valid @RequestBody MachineDto machineDto) {
-        return ResponseEntity.ok("TODO");
+    public ResponseEntity<MachineDto> addMachine(@Valid @RequestBody MachineDto machineDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(machineService.addMachine(machineDto));
     }
 }

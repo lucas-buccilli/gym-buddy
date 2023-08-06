@@ -5,11 +5,17 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Machine {
+public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Column(name = "status")
+    private boolean active;
+
+    //startedAt datetime
 }
