@@ -10,5 +10,5 @@ public interface MembershipService {
 
     MembershipDto addMembership(MembershipDto memberDto);
 
-    boolean isActive(MembershipDto membershipDto);
+    boolean isActive();
 }

@@ -30,7 +30,7 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
-    public boolean isActive(MembershipDto membershipDto) {
-        return false;
+    public boolean isActive() {
+        return true;
     }
 }
