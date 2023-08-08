@@ -44,7 +44,7 @@ class MembershipControllerTest {
     @Test
     void addMembership() throws Exception {
 
-        var membershipDto = new MembershipDto().builder().memberId(0).active(true).build();
+        var membershipDto = MembershipDto.builder().memberId(0).active(true).build();
         when(membershipService.addMembership(any())).thenReturn(membershipDto);
 
         mockMvc.perform(
