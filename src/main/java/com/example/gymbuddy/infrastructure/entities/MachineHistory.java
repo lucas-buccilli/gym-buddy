@@ -24,11 +24,11 @@ public class MachineHistory {
     @Column(name = "workout_date")
     private LocalDate workoutDate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "machine_id")
     private Machine machine;
 }

@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.gymbuddy.implementation.database.specifications.MachineHistorySpecifications.hasMachineId;
+import static com.example.gymbuddy.implementation.database.specifications.MachineHistorySpecifications.hasMemberId;
+import static org.springframework.data.jpa.domain.Specification.where;
+
 @Service
 @RequiredArgsConstructor
 public class MachineHistoryServiceImpl implements MachineHistoryService {
@@ -27,5 +31,16 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
     public MachineHistoryDto addMachineHistory(MachineHistoryDto machineHistoryDto) {
         var machineHistory = modelMapper.map(machineHistoryDto, MachineHistory.class);
         return modelMapper.map(machineHistoryRepository.save(machineHistory), MachineHistoryDto.class);
+    }
+
+    @Override
+    public List<MachineHistoryDto> findByMachineIdAndMemberId(int machineId, int memberId) {
+        var histories = machineHistoryRepository.findAll(
+                where(hasMachineId(machineId))
+                        .and(hasMemberId(memberId))
+        );
+        return histories.stream()
+                .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class))
+                .toList();
     }
 }
