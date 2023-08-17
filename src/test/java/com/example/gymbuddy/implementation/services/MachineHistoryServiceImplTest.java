@@ -5,7 +5,6 @@ import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
-import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
