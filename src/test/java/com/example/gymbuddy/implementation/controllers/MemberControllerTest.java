@@ -4,7 +4,6 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.MachineHistoryService;
 import com.example.gymbuddy.infrastructure.services.MemberService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;

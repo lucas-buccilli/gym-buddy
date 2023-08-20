@@ -1,6 +1,5 @@
 package com.example.gymbuddy.infrastructure.services;
 
-import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 
 import java.util.List;
