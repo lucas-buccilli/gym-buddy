@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    private final MachineHistoryService machineHistoryService;
 
     @GetMapping
     public ResponseEntity<List<MemberDto>> findAll() {
@@ -29,9 +28,5 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(memberDto));
     }
 
-    @GetMapping(path = "/{member_id}/machine/{machine_id}/history")
-    public ResponseEntity<List<MachineHistoryDto>> getHistory(@PathVariable(name = "member_id") int memberId,
-                                                              @PathVariable(name = "machine_id") int machineId) {
-        return ResponseEntity.ok(machineHistoryService.findByMachineIdAndMemberId(machineId, memberId));
-    }
+
 }
