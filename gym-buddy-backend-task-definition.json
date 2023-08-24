@@ -18,7 +18,7 @@
             "environment": [
                   {
                     "name": "SPRING_DATASOURCE_URL",
-                    "value": "jdbc:mysql://gym-buddy-db/gymbuddy?allowPublicKeyRetrieval=true"
+                    "value": "jdbc:mysql://gym-buddy-db:3306/gymbuddy?allowPublicKeyRetrieval=true"
                 }
             ],
             "environmentFiles": [],
