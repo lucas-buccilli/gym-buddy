@@ -16,9 +16,13 @@
             ],
             "essential": true,
             "environment": [
-                  {
+                {
                     "name": "SPRING_DATASOURCE_URL",
-                    "value": "jdbc:mysql://gym-buddy-db:3306/gymbuddy?allowPublicKeyRetrieval=true"
+                    "value": "jdbc:mysql://54.224.10.249:3306/gymbuddy?allowPublicKeyRetrieval=true"
+                },
+                {
+                    "name": "SPRING_FLYWAY_URL",
+                    "value": "jdbc:mysql://54.224.10.249:3306/gymbuddy"
                 }
             ],
             "environmentFiles": [],
