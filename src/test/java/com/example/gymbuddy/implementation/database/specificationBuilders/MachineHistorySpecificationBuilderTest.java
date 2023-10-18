@@ -1,32 +1,21 @@
 package com.example.gymbuddy.implementation.database.specificationBuilders;
 
-import com.example.gymbuddy.implementation.database.specifications.MachineHistorySpecifications;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import java.time.LocalDate;
 
 class MachineHistorySpecificationBuilderTest {
+    private static final int MACHINE_ID = 1;
+    private static final int MEMBER_ID = 2;
+    private static final LocalDate WORKOUT_DATE = LocalDate.now();
 
     @Test
-    void builder() {
-    }
-
-    @Test
-    void build() {
-    }
-
-    @Test
-    void hasMachineId() {
-    }
-
-    @Test
-    void hasMemberId() {
-    }
-
-    @Test
-    void hasWorkoutDate() {
+    void shouldPopulateSpecificationWhenNonNullFields() {
+        var specification = MachineHistorySpecificationBuilder.builder()
+                .hasMachineId(MACHINE_ID)
+                .hasWorkoutDate(WORKOUT_DATE)
+                .hasMemberId(MEMBER_ID)
+                .build();
+        
     }
 }
