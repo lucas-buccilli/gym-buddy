@@ -4,6 +4,7 @@ import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.Member;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MachineHistoryDto {
+    @Null
     private Integer id;
     @NotNull
     private Integer numberReps;
@@ -26,8 +28,8 @@ public class MachineHistoryDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull
     private LocalDate workoutDate;
-    @NotNull
+    @Null
     private Integer memberId;
-    @NotNull
+    @Null
     private Integer machineId;
 }

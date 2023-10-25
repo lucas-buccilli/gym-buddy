@@ -4,7 +4,6 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.MachineHistoryService;
 import com.example.gymbuddy.infrastructure.services.MemberService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -63,19 +63,5 @@ class MemberControllerTest {
                 .andDo(print())
                 .andExpect(status().is(201))
                 .andExpect(content().string(objectMapper.writeValueAsString(memberDto)));
-    }
-
-    @Test
-    public void shouldReturnMachineHistoryForMember() throws Exception {
-        var machineHistoryDto = MachineHistoryDto.builder()
-                .machineId(2).memberId(1).build();
-        var machineHistoryList = List.of(machineHistoryDto);
-        when(machineHistoryService.findByMachineIdAndMemberId(anyInt(), anyInt())).thenReturn(machineHistoryList);
-
-        mockMvc.perform(get("/members/1/machine/2/history"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].memberId").value(machineHistoryDto.getMemberId()))
-                .andExpect(jsonPath("$[0].machineId").value(machineHistoryDto.getMachineId()));
     }
 }

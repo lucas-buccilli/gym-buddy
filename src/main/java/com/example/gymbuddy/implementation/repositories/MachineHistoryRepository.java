@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface MachineHistoryRepository extends JpaRepository<MachineHistory, Integer>,
         JpaSpecificationExecutor<MachineHistory> {
-   // public List<MachineHistory> findByWorkoutDate();
+     public MachineHistory findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(Integer memberId, Integer machineId);
 }
