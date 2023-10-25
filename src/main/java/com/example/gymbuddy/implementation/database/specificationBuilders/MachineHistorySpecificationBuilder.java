@@ -17,12 +17,17 @@ public class MachineHistorySpecificationBuilder {
     }
 
     public Specification<MachineHistory> build() {
+        if (this.specification == null) {
+            throw new NullPointerException("Specification is null");
+        }
         return this.specification;
     }
 
     public MachineHistorySpecificationBuilder hasMachineId(Integer machineId) {
         if(machineId != null) {
             addSpecification(MachineHistorySpecifications.hasMachineId(machineId));
+        } else {
+            throw new NullPointerException("Machine id is null");
         }
         return this;
     }
@@ -30,6 +35,8 @@ public class MachineHistorySpecificationBuilder {
     public MachineHistorySpecificationBuilder hasMemberId(Integer memberId) {
         if(memberId != null) {
             addSpecification(MachineHistorySpecifications.hasMemberId(memberId));
+        } else {
+            throw new NullPointerException("Member id is null");
         }
         return this;
     }
@@ -38,6 +45,8 @@ public class MachineHistorySpecificationBuilder {
         if(workoutDate != null) {
             System.out.println(workoutDate);
             addSpecification(MachineHistorySpecifications.hasWorkoutDate(workoutDate));
+        } else {
+            throw new NullPointerException("Workout Date is null");
         }
         return this;
     }
