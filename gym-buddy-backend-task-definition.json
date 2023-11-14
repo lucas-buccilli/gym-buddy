@@ -18,11 +18,11 @@
             "environment": [
                 {
                     "name": "SPRING_DATASOURCE_URL",
-                    "value": "jdbc:mysql://3.90.145.28:3306/gymbuddy?allowPublicKeyRetrieval=true"
+                    "value": "jdbc:mysql://54.224.132.186:3306/gymbuddy?allowPublicKeyRetrieval=true"
                 },
                 {
                     "name": "SPRING_FLYWAY_URL",
-                    "value": "jdbc:mysql://3.90.145.28:3306/gymbuddy"
+                    "value": "jdbc:mysql://54.224.132.186:3306/gymbuddy"
                 }
             ],
             "environmentFiles": [],
