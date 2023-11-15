@@ -1,24 +1,23 @@
-package com.example.gymbuddy.implementation.services;
+package com.example.gymbuddy.implementation.dataproviders;
 
 import com.example.gymbuddy.implementation.database.specificationBuilders.MachineHistorySpecificationBuilder;
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
+import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
-import com.example.gymbuddy.infrastructure.services.MachineHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.example.gymbuddy.implementation.database.specifications.MachineHistorySpecifications.hasMachineId;
-import static com.example.gymbuddy.implementation.database.specifications.MachineHistorySpecifications.hasMemberId;
-import static org.springframework.data.jpa.domain.Specification.where;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MachineHistoryServiceImpl implements MachineHistoryService {
+public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
     private final MachineHistoryRepository machineHistoryRepository;
     private final ModelMapper modelMapper;
 
@@ -38,21 +37,22 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
     }
 
     @Override
-    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, LocalDate workoutDate) {
-        var histories = machineHistoryRepository.findAll(
-                MachineHistorySpecificationBuilder.builder()
-                        .hasMachineId(machineId)
-                        .hasMemberId(memberId)
-                        .hasWorkoutDate(workoutDate)
-                        .build()
-        );
+    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, @Nullable LocalDateTime workoutDate) {
+        MachineHistorySpecificationBuilder builder = MachineHistorySpecificationBuilder.builder()
+                .hasMachineId(machineId)
+                .hasMemberId(memberId);
+        if (Objects.nonNull(workoutDate)) {
+            builder.hasWorkoutDate(workoutDate);
+        }
+        var histories = machineHistoryRepository.findAll(builder.build());
         return histories.stream()
                 .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class))
                 .toList();
     }
 
     @Override
-    public List<MachineHistoryDto> findLatestWorkout(Integer memberId, Integer machineId) {
-        return List.of(modelMapper.map(machineHistoryRepository.findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(memberId, machineId), MachineHistoryDto.class));
+    public Optional<MachineHistoryDto> findLatestWorkout(Integer memberId, Integer machineId) {
+        return machineHistoryRepository.findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(memberId, machineId)
+                .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class));
     }
 }

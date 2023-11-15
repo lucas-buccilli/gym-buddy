@@ -4,7 +4,8 @@ import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
 
-import java.time.LocalDate;
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class EntityGenerator {
@@ -30,7 +31,7 @@ public class EntityGenerator {
         machineHistory.setNumberReps((int) (Math.random() * 100));
         machineHistory.setMaxWeight((int) (Math.random() * 100));
         machineHistory.setNumberSets((int) (Math.random() * 100));
-        machineHistory.setWorkoutDate(LocalDate.now());
+        machineHistory.setWorkoutDate(LocalDateTime.now());
         return machineHistory;
     }
 }

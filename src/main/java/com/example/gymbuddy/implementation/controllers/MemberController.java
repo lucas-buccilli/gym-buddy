@@ -1,9 +1,7 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
-import com.example.gymbuddy.infrastructure.services.MachineHistoryService;
-import com.example.gymbuddy.infrastructure.services.MemberService;
+import com.example.gymbuddy.infrastructure.services.IMemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,7 @@ import java.util.List;
 @RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
-    private final MemberService memberService;
+    private final IMemberService memberService;
 
     @GetMapping
     public ResponseEntity<List<MemberDto>> findAll() {

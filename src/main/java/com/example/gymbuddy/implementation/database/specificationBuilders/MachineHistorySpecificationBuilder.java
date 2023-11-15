@@ -3,9 +3,10 @@ package com.example.gymbuddy.implementation.database.specificationBuilders;
 
 import com.example.gymbuddy.implementation.database.specifications.MachineHistorySpecifications;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
+import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MachineHistorySpecificationBuilder {
     private Specification<MachineHistory> specification;
@@ -41,13 +42,8 @@ public class MachineHistorySpecificationBuilder {
         return this;
     }
 
-    public MachineHistorySpecificationBuilder hasWorkoutDate(LocalDate workoutDate) {
-        if(workoutDate != null) {
-            System.out.println(workoutDate);
-            addSpecification(MachineHistorySpecifications.hasWorkoutDate(workoutDate));
-        } else {
-            throw new NullPointerException("Workout Date is null");
-        }
+    public MachineHistorySpecificationBuilder hasWorkoutDate(@NonNull LocalDateTime workoutDate) {
+        addSpecification(MachineHistorySpecifications.hasWorkoutDate(workoutDate));
         return this;
     }
 

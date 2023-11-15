@@ -4,7 +4,7 @@ import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 
 import java.util.List;
 
-public interface MemberService {
+public interface IMemberService {
     List<MemberDto> findAll();
 
     MemberDto addMember(MemberDto memberDto);

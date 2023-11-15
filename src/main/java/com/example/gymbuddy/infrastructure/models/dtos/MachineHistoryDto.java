@@ -1,8 +1,5 @@
 package com.example.gymbuddy.infrastructure.models.dtos;
 
-import com.example.gymbuddy.infrastructure.entities.Machine;
-import com.example.gymbuddy.infrastructure.entities.Member;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
@@ -10,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -25,9 +22,9 @@ public class MachineHistoryDto {
     private Integer maxWeight;
     @NotNull
     private Integer numberSets;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @NotNull
-    private LocalDate workoutDate;
+    private LocalDateTime workoutDate;
     @Null
     private Integer memberId;
     @Null

@@ -1,9 +1,9 @@
-package com.example.gymbuddy.implementation.services;
+package com.example.gymbuddy.implementation.dataproviders;
 
 import com.example.gymbuddy.implementation.repositories.MembershipRepository;
+import com.example.gymbuddy.infrastructure.dataproviders.IMembershipDataProvider;
 import com.example.gymbuddy.infrastructure.entities.Membership;
 import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
-import com.example.gymbuddy.infrastructure.services.MembershipService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MembershipServiceImpl implements MembershipService {
+public class MembershipDataProvider implements IMembershipDataProvider {
     private final MembershipRepository membershipRepository;
     private final ModelMapper modelMapper;
 
