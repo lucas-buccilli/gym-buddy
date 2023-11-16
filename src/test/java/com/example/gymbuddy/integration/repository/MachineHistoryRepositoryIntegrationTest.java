@@ -13,6 +13,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -76,5 +77,21 @@ public class MachineHistoryRepositoryIntegrationTest {
         var machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(1, machineHistories.size());
         assertEquals(machineHistory, machineHistories.get(0));
+    }
+
+    @Test
+    void shouldReturnLatestWorkout() {
+        var machine = EntityGenerator.getMachine();
+        var member = EntityGenerator.getMember();
+        var machineHistory = EntityGenerator.getMachineHistory(machine, member);
+        var machineHistoryLatest = EntityGenerator.getMachineHistory(machine, member);
+        machineRepository.save(machine);
+        memberRepository.save(member);
+        machineHistoryRepository.save(machineHistory);
+        machineHistoryRepository.save(machineHistoryLatest);
+
+        var result = machineHistoryRepository
+                .findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(member.getId(), machine.getId());
+        assertEquals(machineHistoryLatest.getWorkoutDate(), result.get().getWorkoutDate());
     }
 }

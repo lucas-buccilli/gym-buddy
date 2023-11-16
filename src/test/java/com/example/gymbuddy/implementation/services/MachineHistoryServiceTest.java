@@ -55,14 +55,11 @@ class MachineHistoryServiceTest {
         var machineHistoryDto = MachineHistoryDto.builder().memberId(memberId).machineId(machineId).build();
         var machineHistoryDtos = List.of(machineHistoryDto);
         when(machineHistoryDataProvider.findBy(anyInt(), anyInt(), any())).thenReturn(machineHistoryDtos);
-        //when by member id
         var result = machineHistoryService.findBy(memberId, machineId, null);
         assertEquals(machineHistoryDtos, result);
         verify(machineHistoryDataProvider).findBy(memberId, machineId, null);
         assertEquals(memberId, machineHistoryDtos.get(0).getMemberId());
         assertEquals(machineId, machineHistoryDtos.get(0).getMachineId());
-
-        //when incorrect date provided
     }
 
     @Test
@@ -76,6 +73,5 @@ class MachineHistoryServiceTest {
         var result = machineHistoryService.findLatestWorkout(memberId, machineId);
         assertEquals(machineHistoryDtoOptional, result);
         verify(machineHistoryDataProvider).findLatestWorkout(memberId, machineId);
-        // how to verify if it is latest
     }
 }
