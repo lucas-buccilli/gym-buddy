@@ -1,15 +1,12 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.validators.requests.MachineHistoryRequestValidator;
-import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -112,7 +109,6 @@ class MachineHistoryControllerTest {
     when(machineHistoryService.findLatestWorkout(anyInt(), anyInt()))
             .thenReturn(Optional.of(machineHistoryDto));
 
-    //how to assert if it is latest?
         var result = mockMvc.perform(get("/members/1/machines/2/history/latest"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -131,15 +127,10 @@ class MachineHistoryControllerTest {
     @Test
     public void getLatestMachineHistoryTrowsException() throws Exception {
 
-        //what is the exception? 404?
         when(machineHistoryService.findLatestWorkout(anyInt(), anyInt()))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/members/1/machines/2/history/latest"))
                 .andExpect(status().isNotFound());
-                //.andExpect(jsonPath("$.timestamp").isNotEmpty())
-                //.andExpect(jsonPath("$.message").value("Page not found"))
-                //.andExpect(jsonPath("$.path").value("/members/1/machines/2/history/latest"));
     }
-
 }

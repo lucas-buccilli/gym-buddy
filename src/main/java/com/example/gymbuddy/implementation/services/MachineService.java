@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.dataproviders.IMachineDataProvider;
-import com.example.gymbuddy.infrastructure.entities.Machine;
+import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class MachineService implements IMachineService {
     @Override
     public MachineDto addMachine(MachineDto machineDto) {
         var exists = machineDataProvider.findByName(machineDto.getName()).isPresent();
-        if(exists) throw new RuntimeException("Exists");
+        if(exists) throw new AlreadyExistsException(machineDto);
         return machineDataProvider.addMachine(machineDto);
     }
 }

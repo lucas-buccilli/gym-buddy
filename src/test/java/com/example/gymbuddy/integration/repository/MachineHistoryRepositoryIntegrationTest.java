@@ -13,7 +13,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,7 +32,7 @@ public class MachineHistoryRepositoryIntegrationTest {
     private MemberRepository memberRepository;
 
     @Test
-    void temp() {
+    void shouldFindMachineHistoryBySpecification() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
@@ -63,7 +62,7 @@ public class MachineHistoryRepositoryIntegrationTest {
     }
 
     @Test
-    void temp2() {
+    void shouldFindMachineHistoryBySpecificationWithoutWorkoutDate() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);

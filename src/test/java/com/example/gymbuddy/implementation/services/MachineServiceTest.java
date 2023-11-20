@@ -31,7 +31,6 @@ class MachineServiceTest {
     @Test
     void findAll() {
         var machineDtos = List.of(new MachineDto());
-        //given
         when(machineDataProvider.findAll()).thenReturn(machineDtos);
         //when
         var result = machineService.findAll();
@@ -53,8 +52,9 @@ class MachineServiceTest {
 
     @Test
     public void addAlreadyExistingMachineThrowsException() {
-        var machineDto = MachineDto.builder().name("smith").build();
+        var machineDto = MachineDto.builder().id(1).name("smith").build();
         when(machineDataProvider.findByName(any())).thenReturn(Optional.of(machineDto));
-        assertThrows(RuntimeException.class, () -> machineService.addMachine(machineDto));
+        var result = assertThrows(AlreadyExistsException.class, () -> machineService.addMachine(machineDto));
+        assertEquals("Machine already exists with id: 1", result.getMessage());
     }
 }
