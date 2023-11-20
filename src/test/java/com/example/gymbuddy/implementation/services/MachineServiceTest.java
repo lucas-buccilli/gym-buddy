@@ -1,6 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.dataproviders.IMachineDataProvider;
+import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
