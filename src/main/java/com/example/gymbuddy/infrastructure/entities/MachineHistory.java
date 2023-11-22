@@ -1,9 +1,10 @@
 package com.example.gymbuddy.infrastructure.entities;
 
+import com.example.gymbuddy.implementation.converters.DateTimeConverter;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,7 +23,8 @@ public class MachineHistory {
     private Integer numberSets;
 
     @Column(name = "workout_date")
-    private LocalDate workoutDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime workoutDate;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

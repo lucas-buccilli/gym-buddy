@@ -6,9 +6,10 @@ import lombok.*;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class MachineDto {
+@NoArgsConstructor
+public class MachineDto implements Dto{
+
     private Integer id;
 
     @Size(max = 500, message = "The length of name must be between less than 500 characters.")

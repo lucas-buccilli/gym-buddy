@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,7 +32,7 @@ public class MachineHistoryRepositoryIntegrationTest {
     private MemberRepository memberRepository;
 
     @Test
-    void temp() {
+    void shouldFindMachineHistoryBySpecification() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
@@ -56,8 +56,41 @@ public class MachineHistoryRepositoryIntegrationTest {
         machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(0, machineHistories.size());
 
-        specification = MachineHistorySpecificationBuilder.builder().hasWorkoutDate(LocalDate.now().minusDays(1L)).build();
+        specification = MachineHistorySpecificationBuilder.builder().hasWorkoutDate(LocalDateTime.now().minusDays(1L)).build();
         machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(0, machineHistories.size());
+    }
+
+    @Test
+    void shouldFindMachineHistoryBySpecificationWithoutWorkoutDate() {
+        var machine = EntityGenerator.getMachine();
+        var member = EntityGenerator.getMember();
+        var machineHistory = EntityGenerator.getMachineHistory(machine, member);
+        machineRepository.save(machine);
+        memberRepository.save(member);
+        machineHistoryRepository.save(machineHistory);
+        var specification = MachineHistorySpecificationBuilder.builder()
+                .hasMachineId(machine.getId())
+                .hasMemberId(member.getId())
+                .build();
+        var machineHistories = machineHistoryRepository.findAll(specification);
+        assertEquals(1, machineHistories.size());
+        assertEquals(machineHistory, machineHistories.get(0));
+    }
+
+    @Test
+    void shouldReturnLatestWorkout() {
+        var machine = EntityGenerator.getMachine();
+        var member = EntityGenerator.getMember();
+        var machineHistory = EntityGenerator.getMachineHistory(machine, member);
+        var machineHistoryLatest = EntityGenerator.getMachineHistory(machine, member);
+        machineRepository.save(machine);
+        memberRepository.save(member);
+        machineHistoryRepository.save(machineHistory);
+        machineHistoryRepository.save(machineHistoryLatest);
+
+        var result = machineHistoryRepository
+                .findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(member.getId(), machine.getId());
+        assertEquals(machineHistoryLatest.getWorkoutDate(), result.get().getWorkoutDate());
     }
 }

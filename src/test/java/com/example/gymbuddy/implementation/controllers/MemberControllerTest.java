@@ -1,9 +1,8 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
-import com.example.gymbuddy.infrastructure.services.MachineHistoryService;
-import com.example.gymbuddy.infrastructure.services.MemberService;
+import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
+import com.example.gymbuddy.infrastructure.services.IMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,10 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,10 +29,7 @@ class MemberControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private MachineHistoryService machineHistoryService;
+    private IMemberService memberService;
 
     @Test
     public void shouldReturnAllMembers() throws Exception {

@@ -70,7 +70,9 @@ def exclusions = [
         '**/entities/**',
         '**/*Dto**.*',
         '**/*Config*.*',
-        '**/GymBuddyApplication.*'
+        '**/GymBuddyApplication.*',
+        '**/exceptions/**',
+        '**/configurations/**'
 ]
 
 jacocoTestReport {

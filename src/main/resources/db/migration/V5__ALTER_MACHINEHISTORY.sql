@@ -1,0 +1,1 @@
+ALTER TABLE machine_history MODIFY workout_date varchar(50) NOT NULL

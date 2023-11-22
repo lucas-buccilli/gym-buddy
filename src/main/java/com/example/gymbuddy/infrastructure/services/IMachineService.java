@@ -4,7 +4,7 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 
 import java.util.List;
 
-public interface MachineService {
+public interface IMachineService {
     List<MachineDto> findAll();
 
     MachineDto addMachine(MachineDto machineDto);

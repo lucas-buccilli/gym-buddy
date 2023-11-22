@@ -4,6 +4,7 @@ import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public final class MachineHistorySpecifications {
     private MachineHistorySpecifications() {
@@ -17,7 +18,7 @@ public final class MachineHistorySpecifications {
         return (machineHistory, cq, cb) -> cb.equal(machineHistory.get("member").get("id"), memberId);
     }
 
-    public static Specification<MachineHistory> hasWorkoutDate(LocalDate workoutDate) {
+    public static Specification<MachineHistory> hasWorkoutDate(LocalDateTime workoutDate) {
         return (machineHistory, cq, cb) -> cb.equal(machineHistory.get("workoutDate"), workoutDate);
     }
 }

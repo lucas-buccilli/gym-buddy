@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
-import com.example.gymbuddy.infrastructure.services.MachineService;
+import com.example.gymbuddy.infrastructure.services.IMachineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ class MachineControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private MachineService machineService;
+    private IMachineService machineService;
 
     @Test
     public void shouldReturnAllMachines() throws Exception {

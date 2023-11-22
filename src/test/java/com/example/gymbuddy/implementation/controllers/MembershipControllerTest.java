@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
-import com.example.gymbuddy.infrastructure.services.MembershipService;
+import com.example.gymbuddy.infrastructure.services.IMembershipService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ class MembershipControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    MembershipService membershipService;
+    IMembershipService membershipService;
 
     @Autowired
     private MockMvc mockMvc;

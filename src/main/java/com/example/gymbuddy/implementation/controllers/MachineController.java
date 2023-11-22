@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
-import com.example.gymbuddy.infrastructure.services.MachineService;
+import com.example.gymbuddy.infrastructure.services.IMachineService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/machines")
 @RequiredArgsConstructor
 public class MachineController {
-    private final MachineService machineService;
+    private final IMachineService machineService;
 
     @GetMapping
     public ResponseEntity<List<MachineDto>> findAll() {
