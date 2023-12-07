@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.validators.requests.MachineHistoryRequestValidator;
-import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +43,7 @@ class MachineHistoryControllerTest {
 
     @Test
     void addMachineHistory() throws Exception {
-        var machineHistoryDto = MachineHistoryDto.builder()
+        var machineHistoryDto = MachineHistoryDao.builder()
                 .maxWeight(200).numberReps(3).numberSets(2)
                 .workoutDate(LocalDateTime.now()).build();
         when(machineHistoryRequestValidator.validate(any(MachineHistoryRequestValidator.AddMachineHistoryRequest.class)))
@@ -61,7 +61,7 @@ class MachineHistoryControllerTest {
 
     @Test
     public void addMachineHistoryThrowsException() throws Exception {
-        var machineHistoryDto = MachineHistoryDto.builder()
+        var machineHistoryDto = MachineHistoryDao.builder()
                 .maxWeight(200).numberReps(3).numberSets(2)
                 .workoutDate(LocalDateTime.now()).build();
 
@@ -82,7 +82,7 @@ class MachineHistoryControllerTest {
 
     @Test
     public void shouldReturnMachineHistoryForMember() throws Exception {
-        var machineHistoryDto = MachineHistoryDto.builder()
+        var machineHistoryDto = MachineHistoryDao.builder()
                 .memberId(1).machineId(2).workoutDate(LocalDateTime.now()).build();
         var machineHistoryList = List.of(machineHistoryDto);
         when(machineHistoryService.findBy(anyInt(), anyInt(), any())).thenReturn(machineHistoryList);
@@ -101,7 +101,7 @@ class MachineHistoryControllerTest {
 
     @Test
     public void shouldReturnLatestHistory() throws Exception {
-        var machineHistoryDto = MachineHistoryDto.builder()
+        var machineHistoryDto = MachineHistoryDao.builder()
                 .memberId(1).machineId(2).workoutDate(LocalDateTime.now())
                 .maxWeight(200).numberReps(3).numberSets(2)
                 .workoutDate(LocalDateTime.now()).build();

@@ -1,17 +1,17 @@
 package com.example.gymbuddy.infrastructure.services;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface IMachineHistoryService {
-    List<MachineHistoryDto> findAll();
+    List<MachineHistoryDao> findAll();
 
-    MachineHistoryDto addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDto machineHistoryDto);
+    MachineHistoryDao addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDao machineHistoryDao);
 
-    List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, LocalDateTime workoutDate);
+    List<MachineHistoryDao> findBy(Integer memberId, Integer machineId, LocalDateTime workoutDate);
 
-    Optional<MachineHistoryDto> findLatestWorkout(Integer memberId, Integer machineId);
+    Optional<MachineHistoryDao> findLatestWorkout(Integer memberId, Integer machineId);
 }

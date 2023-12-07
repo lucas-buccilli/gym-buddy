@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,13 @@ public class MemberController {
     private final IMemberService memberService;
 
     @GetMapping
-    public ResponseEntity<List<MemberDto>> findAll() {
+    public ResponseEntity<List<MemberDao>> findAll() {
         return ResponseEntity.ok(memberService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberDto memberDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(memberDto));
+    public ResponseEntity<MemberDao> addMember(@Valid @RequestBody MemberDao memberDao) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(memberDao));
     }
 
 

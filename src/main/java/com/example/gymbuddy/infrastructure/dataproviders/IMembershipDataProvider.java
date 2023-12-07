@@ -1,13 +1,16 @@
 package com.example.gymbuddy.infrastructure.dataproviders;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
+import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IMembershipDataProvider {
-    List<MembershipDto> findAll();
+    List<MembershipDao> findAll();
 
-    MembershipDto addMembership(MembershipDto memberDto);
+    MembershipDao addMembership(MembershipDao memberDto);
 
     boolean isActive();
+
+    Integer getNumberOfActiveMemberships();
 }

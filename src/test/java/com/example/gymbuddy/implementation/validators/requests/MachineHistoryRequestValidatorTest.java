@@ -2,22 +2,20 @@ package com.example.gymbuddy.implementation.validators.requests;
 
 import com.example.gymbuddy.implementation.dataproviders.MachineDataProvider;
 import com.example.gymbuddy.implementation.dataproviders.MemberDataProvider;
-import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
-import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
+import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,8 +50,8 @@ class MachineHistoryRequestValidatorTest {
         MachineHistoryRequestValidator.AddMachineHistoryRequest machineHistoryRequest
                 = new MachineHistoryRequestValidator.AddMachineHistoryRequest(1,3);
 
-        when(memberDataProvider.findById(any())).thenReturn(Optional.of(new MemberDto()));
-        when(machineDataProvider.findById(any())).thenReturn(Optional.of(new MachineDto()));
+        when(memberDataProvider.findById(any())).thenReturn(Optional.of(new MemberDao()));
+        when(machineDataProvider.findById(any())).thenReturn(Optional.of(new MachineDao()));
 
         var result = machineHistoryRequestValidator.validate(machineHistoryRequest);
         assertNotNull(result);

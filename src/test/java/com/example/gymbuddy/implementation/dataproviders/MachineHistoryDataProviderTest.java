@@ -1,10 +1,11 @@
 package com.example.gymbuddy.implementation.dataproviders;
 
+import com.example.gymbuddy.implementation.database.specificationBuilders.MachineHistorySpecificationBuilder;
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
 import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
-import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -16,7 +17,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,13 +40,13 @@ public class MachineHistoryDataProviderTest {
     private ModelMapper modelMapper;
     @Test
     void findAll() {
-        var machineHistoryDtoList = List.of(MachineHistoryDto.builder().build());
+        var machineHistoryDtoList = List.of(MachineHistoryDao.builder().build());
         var machineHistoryList = List.of(new MachineHistory());
 
         when(machineHistoryRepository.findAll()).thenReturn(machineHistoryList);
         assertEquals(machineHistoryDtoList, machineHistoryDataProvider.findAll());
         verify(machineHistoryRepository).findAll();
-        verify(modelMapper).map(eq(machineHistoryList.get(0)), eq(MachineHistoryDto.class));
+        verify(modelMapper).map(eq(machineHistoryList.get(0)), eq(MachineHistoryDao.class));
     }
 
     @Test
@@ -51,7 +54,7 @@ public class MachineHistoryDataProviderTest {
         var machineHistory = new MachineHistory();
 
         when(machineHistoryRepository.save(any())).thenReturn(machineHistory);
-        assertNotNull(machineHistoryDataProvider.addMachineHistory(null, null,  MachineHistoryDto.builder().build()));
+        assertNotNull(machineHistoryDataProvider.addMachineHistory(null, null,  MachineHistoryDao.builder().build()));
         verify(machineHistoryRepository).save(machineHistory);
     }
 
@@ -75,9 +78,10 @@ public class MachineHistoryDataProviderTest {
         assertEquals(machineHistory.getMachine().getId(), results.get(0).getMachineId());
         assertEquals(machineHistory.getWorkoutDate(), results.get(0).getWorkoutDate());
         verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any());
-        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDto.class));
+        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDao.class));
     }
 
+    @Test
     void findByWorkoutDateNull() {
         Member member = new Member();
         Machine machine = new Machine();
@@ -97,19 +101,51 @@ public class MachineHistoryDataProviderTest {
         assertEquals(machineHistory.getMachine().getId(), results.get(0).getMachineId());
         assertEquals(machineHistory.getWorkoutDate(), results.get(0).getWorkoutDate());
         verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any());
-        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDto.class));
+        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDao.class));
     }
 
     @Test
     void findLatestWorkout() {
         var latestMachineHistory = Optional.of(new MachineHistory());
-        var machineHistoryDtoOptional = Optional.of(new MachineHistoryDto());
+        var machineHistoryDtoOptional = Optional.of(new MachineHistoryDao());
 
         when(machineHistoryRepository.findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(isNull(), isNull()))
                 .thenReturn(latestMachineHistory);
 
         assertEquals(machineHistoryDtoOptional, machineHistoryDataProvider.findLatestWorkout(null, null));
         verify(machineHistoryRepository).findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(isNull(), isNull());
-        verify(modelMapper).map(eq(latestMachineHistory.get()), eq(MachineHistoryDto.class));
+        verify(modelMapper).map(eq(latestMachineHistory.get()), eq(MachineHistoryDao.class));
+    }
+
+    @Test
+    void shouldGetNumberOfVisitorsWithinTimeframe() {
+        int count = 1;
+        LocalDateTime startDate = LocalDateTime.MIN;
+        LocalDateTime endDate = LocalDateTime.MAX;
+
+        when(machineHistoryRepository.countByWorkoutDateBetween(any(), any())).thenReturn(1);
+
+        assertEquals(count, machineHistoryDataProvider.getNumberOfVisitorsWithinTimeframe(startDate, endDate));
+        verify(machineHistoryRepository).countByWorkoutDateBetween(startDate, endDate);
+    }
+
+    @Test
+    void shouldGetMachineUsage() {
+        LocalDateTime startDate = LocalDateTime.MIN;
+        LocalDateTime endDate = LocalDateTime.MAX;
+        Machine machine = new Machine();
+        machine.setName("Machine");
+        MachineHistory machineHistory = new MachineHistory();
+        machineHistory.setMachine(machine);
+        var machineHistoryList = List.of(machineHistory);
+
+        Map<String, Long> machineUsage = new HashMap<String, Long>();
+        machineUsage.put("Machine", 1L);
+
+        when(machineHistoryRepository.findAll(any(Specification.class))).thenReturn(machineHistoryList);
+
+        var results = machineHistoryDataProvider.getMachineUsage(startDate, endDate);
+        assertEquals(machineUsage, results);
+        //verify(machineHistoryRepository).findAll();
     }
 }

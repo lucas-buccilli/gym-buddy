@@ -6,15 +6,20 @@ import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.integration.DbContainer;
 import com.example.gymbuddy.integration.EntityGenerator;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @SpringBootTest
@@ -30,6 +35,13 @@ public class MachineHistoryRepositoryIntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @AfterEach
+    void afterEach() {
+        machineHistoryRepository.deleteAll();
+        machineRepository.deleteAll();
+        memberRepository.deleteAll();
+    }
 
     @Test
     void shouldFindMachineHistoryBySpecification() {
@@ -91,6 +103,27 @@ public class MachineHistoryRepositoryIntegrationTest {
 
         var result = machineHistoryRepository
                 .findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(member.getId(), machine.getId());
+        assertTrue(result.isPresent());
         assertEquals(machineHistoryLatest.getWorkoutDate(), result.get().getWorkoutDate());
+    }
+
+
+
+    @Test
+    void shouldReturnWorkoutBetweenDates() {
+        var machine = EntityGenerator.getMachine();
+        var member = EntityGenerator.getMember();
+        var machineHistory = EntityGenerator.getMachineHistory(machine, member);
+        machineRepository.save(machine);
+        memberRepository.save(member);
+        machineHistoryRepository.save(machineHistory);
+
+        var result = machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
+                .hasWorkoutDateLessOrEqualTo(machineHistory.getWorkoutDate().plus(Duration.ofHours(1)))
+                .hasWorkoutDateGreaterOrEqualTo(machineHistory.getWorkoutDate().minus(Duration.ofHours(1)))
+                .build());
+
+        assertEquals(1, result.size());
+        assertEquals(machineHistory.getId(), result.get(0).getId());
     }
 }

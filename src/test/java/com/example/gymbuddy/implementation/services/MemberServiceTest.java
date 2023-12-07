@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.dataproviders.IMemberDataProvider;
-import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +27,7 @@ public class MemberServiceTest {
 
     @Test
     void findAll() {
-        var memberDtoList = List.of(new MemberDto());
+        var memberDtoList = List.of(new MemberDao());
 
         when(memberDataProvider.findAll()).thenReturn(memberDtoList);
 
@@ -39,7 +39,7 @@ public class MemberServiceTest {
 
     @Test
     void addMember() {
-        var memberDto = MemberDto.builder().firstName("Sam").build();
+        var memberDto = MemberDao.builder().firstName("Sam").build();
 
         when(memberDataProvider.addMember(any())).thenReturn(memberDto);
 

@@ -1,7 +1,7 @@
 package com.example.gymbuddy.infrastructure.exceptions;
 
-import com.example.gymbuddy.infrastructure.models.dtos.Dto;
-import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.daos.Dao;
+import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 
 import java.util.HashMap;
 
@@ -9,11 +9,11 @@ public class AlreadyExistsException extends RuntimeException{
     private final static HashMap<Class<?>, String> NAME_MAP = new HashMap<>();
 
     static {
-        NAME_MAP.put(MachineDto.class, "Machine");
+        NAME_MAP.put(MachineDao.class, "Machine");
     }
 
-    public AlreadyExistsException(Dto dto) {
-        super(getNameFromClass(dto.getClass()) + " already exists with id: " + dto.getId());
+    public AlreadyExistsException(Dao dao) {
+        super(getNameFromClass(dao.getClass()) + " already exists with id: " + dao.getId());
     }
 
     private static String getNameFromClass(Class<?> clazz) {

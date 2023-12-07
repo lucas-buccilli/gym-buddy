@@ -21,4 +21,12 @@ public final class MachineHistorySpecifications {
     public static Specification<MachineHistory> hasWorkoutDate(LocalDateTime workoutDate) {
         return (machineHistory, cq, cb) -> cb.equal(machineHistory.get("workoutDate"), workoutDate);
     }
+
+    public static Specification<MachineHistory> hasWorkoutDateGreaterThanOrEqualTo(LocalDateTime workoutDate) {
+        return (machineHistory, cq, cb) -> cb.greaterThanOrEqualTo(machineHistory.get("workoutDate"), workoutDate);
+    }
+
+    public static Specification<MachineHistory> hasWorkoutDateLessThanOrEqualTo(LocalDateTime workoutDate) {
+        return (machineHistory, cq, cb) -> cb.lessThanOrEqualTo(machineHistory.get("workoutDate"), workoutDate);
+    }
 }
