@@ -1,6 +1,5 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.implementation.dataproviders.MachineHistoryDataProvider;
 import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
 import com.example.gymbuddy.infrastructure.models.Period;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;

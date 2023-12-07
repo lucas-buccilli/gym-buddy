@@ -3,7 +3,6 @@ package com.example.gymbuddy.infrastructure.dataproviders;
 import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

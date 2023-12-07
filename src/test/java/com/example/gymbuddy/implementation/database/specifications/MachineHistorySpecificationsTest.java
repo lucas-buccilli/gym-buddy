@@ -1,19 +1,5 @@
 package com.example.gymbuddy.implementation.database.specifications;
 
-import com.example.gymbuddy.infrastructure.entities.MachineHistory;
-import jakarta.persistence.criteria.*;
-import org.hibernate.query.sqm.tree.from.SqmRoot;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-
 class MachineHistorySpecificationsTest {
 
 //    @Test

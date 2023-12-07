@@ -3,7 +3,6 @@ package com.example.gymbuddy.implementation.database.specifications;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public final class MachineHistorySpecifications {

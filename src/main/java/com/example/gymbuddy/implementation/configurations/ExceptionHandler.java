@@ -1,7 +1,6 @@
 package com.example.gymbuddy.implementation.configurations;
 
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
-import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,7 +2,6 @@ package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.implementation.dataproviders.MembershipHistoryDataProvider;
 import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
-import com.example.gymbuddy.infrastructure.services.IMembershipHistoryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
