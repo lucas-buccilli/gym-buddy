@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.1'
     implementation 'org.flywaydb:flyway-core:9.19.4'
     implementation 'org.flywaydb:flyway-mysql:9.19.4'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.8'
@@ -69,6 +70,7 @@ test {
 def exclusions = [
         '**/entities/**',
         '**/*Dto**.*',
+        '**/*Dao**.*',
         '**/*Config*.*',
         '**/GymBuddyApplication.*',
         '**/exceptions/**',

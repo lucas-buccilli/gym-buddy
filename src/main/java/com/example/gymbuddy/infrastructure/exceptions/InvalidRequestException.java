@@ -1,7 +1,6 @@
 package com.example.gymbuddy.infrastructure.exceptions;
 
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 

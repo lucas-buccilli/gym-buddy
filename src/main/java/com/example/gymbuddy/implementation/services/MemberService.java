@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.dataproviders.IMemberDataProvider;
-import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ public class MemberService implements IMemberService {
     private final IMemberDataProvider memberDataProvider;
 
     @Override
-    public List<MemberDto> findAll() {
+    public List<MemberDao> findAll() {
         return memberDataProvider.findAll();
     }
 
     @Override
-    public MemberDto addMember(MemberDto memberDto) {
-        return memberDataProvider.addMember(memberDto);
+    public MemberDao addMember(MemberDao memberDao) {
+        return memberDataProvider.addMember(memberDao);
     }
 }

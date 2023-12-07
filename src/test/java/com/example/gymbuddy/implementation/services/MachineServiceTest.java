@@ -2,7 +2,7 @@ package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.dataproviders.IMachineDataProvider;
 import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
-import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,18 +31,18 @@ class MachineServiceTest {
 
     @Test
     void findAll() {
-        var machineDtos = List.of(new MachineDto());
-        when(machineDataProvider.findAll()).thenReturn(machineDtos);
+        var machineDaos = List.of(new MachineDao());
+        when(machineDataProvider.findAll()).thenReturn(machineDaos);
         //when
         var result = machineService.findAll();
         //then
-        assertEquals(machineDtos, result);
+        assertEquals(machineDaos, result);
         verify(machineDataProvider).findAll();
     }
 
     @Test
     void addMachine() {
-        var machineDto = new MachineDto();
+        var machineDto = new MachineDao();
 
         when(machineDataProvider.addMachine(any())).thenReturn(machineDto);
         var result = machineService.addMachine(machineDto);
@@ -53,7 +53,7 @@ class MachineServiceTest {
 
     @Test
     public void addAlreadyExistingMachineThrowsException() {
-        var machineDto = MachineDto.builder().id(1).name("smith").build();
+        var machineDto = MachineDao.builder().id(1).name("smith").build();
         when(machineDataProvider.findByName(any())).thenReturn(Optional.of(machineDto));
         var result = assertThrows(AlreadyExistsException.class, () -> machineService.addMachine(machineDto));
         assertEquals("Machine already exists with id: 1", result.getMessage());

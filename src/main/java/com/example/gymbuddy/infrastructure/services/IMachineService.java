@@ -1,11 +1,11 @@
 package com.example.gymbuddy.infrastructure.services;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 
 import java.util.List;
 
 public interface IMachineService {
-    List<MachineDto> findAll();
+    List<MachineDao> findAll();
 
-    MachineDto addMachine(MachineDto machineDto);
+    MachineDao addMachine(MachineDao machineDao);
 }

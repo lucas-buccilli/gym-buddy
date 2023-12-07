@@ -4,7 +4,6 @@ import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

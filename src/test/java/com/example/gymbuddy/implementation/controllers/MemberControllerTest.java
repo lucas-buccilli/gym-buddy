@@ -1,11 +1,9 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
-import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
+import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,7 +32,7 @@ class MemberControllerTest {
 
     @Test
     public void shouldReturnAllMembers() throws Exception {
-        var member = MemberDto.builder()
+        var member = MemberDao.builder()
                 .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
         when(memberService.findAll()).thenReturn(List.of(member));
 
@@ -47,7 +46,7 @@ class MemberControllerTest {
 
     @Test
     public void shouldAddMember() throws Exception {
-        var memberDto = MemberDto.builder()
+        var memberDto = MemberDao.builder()
                 .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
         when(memberService.addMember(any())).thenReturn(memberDto);
 

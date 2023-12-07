@@ -4,7 +4,7 @@ import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.repositories.MembershipRepository;
 import com.example.gymbuddy.infrastructure.entities.Member;
 import com.example.gymbuddy.infrastructure.entities.Membership;
-import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
+import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,30 +31,41 @@ public class MembershipDataProviderTest {
     private ModelMapper modelMapper  = new ModelMapperConfig().modelMapper();
 
     @Test
-    void findAll() {
+    void shouldFindAll() {
         var memberships = List.of(new Membership());
-        var membershipDtos = List.of(MembershipDto.builder().build());
+        var membershipDtos = List.of(MembershipDao.builder().build());
 
         when(membershipRepository.findAll()).thenReturn(memberships);
         assertEquals(membershipDtos, membershipDataProvider.findAll());
         verify(membershipRepository).findAll();
-        verify(modelMapper).map(eq(memberships.get(0)), eq(MembershipDto.class));
+        verify(modelMapper).map(eq(memberships.get(0)), eq(MembershipDao.class));
     }
 
     @Test
-    void addMembership() {
+    void shouldAddMembership() {
         var membership = new Membership();
         var member = new Member();
         member.setId(1);
         membership.setMember(member);
 
         when(membershipRepository.save(any())).thenReturn(membership);
-        assertNotNull(membershipDataProvider.addMembership(MembershipDto.builder().memberId(member.getId()).build()));
+
+        assertNotNull(membershipDataProvider.addMembership(MembershipDao.builder().memberId(member.getId()).build()));
         verify(membershipRepository).save(membership);
+        verify(modelMapper).map(eq(membership), eq(MembershipDao.class));
     }
 
     @Test
     void isActive() {
         assertTrue(membershipDataProvider.isActive());
+    }
+
+    @Test
+    void shouldGetNumberOfActiveMemberships() {
+        int count = 1;
+        when(membershipRepository.countMembershipsByActiveIsTrue()).thenReturn(1);
+
+        assertEquals(count, membershipDataProvider.getNumberOfActiveMemberships());
+        verify(membershipRepository).countMembershipsByActiveIsTrue();
     }
 }

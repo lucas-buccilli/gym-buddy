@@ -3,7 +3,7 @@ package com.example.gymbuddy.implementation.dataproviders;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.infrastructure.entities.Member;
-import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,13 +34,13 @@ public class MemberDataProviderTest {
     @Test
     public void shouldFindAll() {
         var members = List.of(new Member());
-        var memberDtos = List.of(MemberDto.builder().build());
+        var memberDtos = List.of(MemberDao.builder().build());
 
         when(memberRepository.findAll()).thenReturn(members);
 
         assertEquals(memberDtos, memberDataProvider.findAll());
         verify(memberRepository).findAll();
-        verify(modelMapper).map(eq(members.get(0)), eq(MemberDto.class));
+        verify(modelMapper).map(eq(members.get(0)), eq(MemberDao.class));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MemberDataProviderTest {
         var member = new Member();
         member.setFirstName("John");
         when(memberRepository.save(any())).thenReturn(member);
-        assertNotNull(memberDataProvider.addMember(MemberDto.builder().firstName("John").build()));
+        assertNotNull(memberDataProvider.addMember(MemberDao.builder().firstName("John").build()));
         verify(memberRepository).save(member);
     }
 
@@ -61,6 +61,6 @@ public class MemberDataProviderTest {
 
         memberDataProvider.findById(111);
         verify(memberRepository).findById(111);
-        verify(modelMapper).map(member, MemberDto.class);
+        verify(modelMapper).map(member, MemberDao.class);
     }
 }

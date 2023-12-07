@@ -1,4 +1,4 @@
-package com.example.gymbuddy.infrastructure.models.dtos;
+package com.example.gymbuddy.infrastructure.models.daos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
@@ -7,13 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MachineHistoryDto {
+public class MachineHistoryDao {
     @Null
     private Integer id;
     @NotNull

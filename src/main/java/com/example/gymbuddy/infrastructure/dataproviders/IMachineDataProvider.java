@@ -1,17 +1,17 @@
 package com.example.gymbuddy.infrastructure.dataproviders;
 
-import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IMachineDataProvider {
 
-    List<MachineDto> findAll();
+    List<MachineDao> findAll();
 
-    MachineDto addMachine(MachineDto machineDto);
+    MachineDao addMachine(MachineDao machineDao);
 
-    Optional<MachineDto> findById(Integer machineId);
+    Optional<MachineDao> findById(Integer machineId);
 
-    Optional<MachineDto> findByName(String name);
+    Optional<MachineDao> findByName(String name);
 }

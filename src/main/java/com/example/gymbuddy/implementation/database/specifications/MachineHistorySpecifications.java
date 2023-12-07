@@ -3,7 +3,6 @@ package com.example.gymbuddy.implementation.database.specifications;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public final class MachineHistorySpecifications {
@@ -20,5 +19,13 @@ public final class MachineHistorySpecifications {
 
     public static Specification<MachineHistory> hasWorkoutDate(LocalDateTime workoutDate) {
         return (machineHistory, cq, cb) -> cb.equal(machineHistory.get("workoutDate"), workoutDate);
+    }
+
+    public static Specification<MachineHistory> hasWorkoutDateGreaterThanOrEqualTo(LocalDateTime workoutDate) {
+        return (machineHistory, cq, cb) -> cb.greaterThanOrEqualTo(machineHistory.get("workoutDate"), workoutDate);
+    }
+
+    public static Specification<MachineHistory> hasWorkoutDateLessThanOrEqualTo(LocalDateTime workoutDate) {
+        return (machineHistory, cq, cb) -> cb.lessThanOrEqualTo(machineHistory.get("workoutDate"), workoutDate);
     }
 }

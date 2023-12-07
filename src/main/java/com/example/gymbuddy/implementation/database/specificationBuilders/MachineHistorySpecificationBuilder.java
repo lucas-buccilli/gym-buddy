@@ -24,26 +24,28 @@ public class MachineHistorySpecificationBuilder {
         return this.specification;
     }
 
-    public MachineHistorySpecificationBuilder hasMachineId(Integer machineId) {
-        if(machineId != null) {
-            addSpecification(MachineHistorySpecifications.hasMachineId(machineId));
-        } else {
-            throw new NullPointerException("Machine id is null");
-        }
+    public MachineHistorySpecificationBuilder hasMachineId(@NonNull Integer machineId) {
+        addSpecification(MachineHistorySpecifications.hasMachineId(machineId));
         return this;
     }
 
-    public MachineHistorySpecificationBuilder hasMemberId(Integer memberId) {
-        if(memberId != null) {
-            addSpecification(MachineHistorySpecifications.hasMemberId(memberId));
-        } else {
-            throw new NullPointerException("Member id is null");
-        }
+    public MachineHistorySpecificationBuilder hasMemberId(@NonNull Integer memberId) {
+        addSpecification(MachineHistorySpecifications.hasMemberId(memberId));
         return this;
     }
 
     public MachineHistorySpecificationBuilder hasWorkoutDate(@NonNull LocalDateTime workoutDate) {
         addSpecification(MachineHistorySpecifications.hasWorkoutDate(workoutDate));
+        return this;
+    }
+
+    public MachineHistorySpecificationBuilder hasWorkoutDateGreaterOrEqualTo(@NonNull LocalDateTime workoutDate) {
+        addSpecification(MachineHistorySpecifications.hasWorkoutDateGreaterThanOrEqualTo(workoutDate));
+        return this;
+    }
+
+    public MachineHistorySpecificationBuilder hasWorkoutDateLessOrEqualTo(@NonNull LocalDateTime workoutDate) {
+        addSpecification(MachineHistorySpecifications.hasWorkoutDateLessThanOrEqualTo(workoutDate));
         return this;
     }
 
