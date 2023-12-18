@@ -7,15 +7,17 @@ import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Service
 @RequiredArgsConstructor
@@ -75,5 +77,34 @@ public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
                         Collectors.counting()
                         )
                 );
+    }
+
+    public Map<String, List<MachineHistoryDao>> getMachineProgress(LocalDateTime startDate, LocalDateTime endDate, Integer memberId, Integer machineId) {
+
+        return machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
+                        .hasMemberId(memberId)
+                        .hasMachineId(machineId)
+                    .hasWorkoutDateGreaterOrEqualTo(startDate)
+                    .hasWorkoutDateLessOrEqualTo(endDate)
+                .build(), Sort.by("workoutDate")
+        ).stream()
+                .collect(Collectors.groupingBy(
+                        machineHistory -> machineHistory.getMachine().getName(),
+                        Collectors.mapping(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDao.class), Collectors.toList())
+                        )
+                );
+    }
+
+    @Override
+    public Integer getNumberOfWorkoutDays(LocalDateTime startDate, LocalDateTime endDate, Integer memberId) {
+
+        return machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
+                .hasMemberId(memberId)
+                .hasWorkoutDateGreaterOrEqualTo(startDate)
+                .hasWorkoutDateLessOrEqualTo(endDate)
+                .build()
+        ).stream()
+            .map(machineHistory -> machineHistory.getWorkoutDate().truncatedTo(ChronoUnit.DAYS))
+            .collect(toSet()).size();
     }
 }

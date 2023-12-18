@@ -56,6 +56,6 @@ class MachineServiceTest {
         var machineDto = MachineDao.builder().id(1).name("smith").build();
         when(machineDataProvider.findByName(any())).thenReturn(Optional.of(machineDto));
         var result = assertThrows(AlreadyExistsException.class, () -> machineService.addMachine(machineDto));
-        assertEquals("Machine already exists with id: 1", result.getMessage());
+        assertEquals("Machine already exists with identifier: smith", result.getMessage());
     }
 }

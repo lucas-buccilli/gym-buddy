@@ -5,6 +5,7 @@ import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
 import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
+import com.example.gymbuddy.integration.EntityGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
@@ -21,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -140,10 +141,49 @@ public class MachineHistoryDataProviderTest {
         Map<String, Long> machineUsage = new HashMap<String, Long>();
         machineUsage.put("Machine", 1L);
 
-        when(machineHistoryRepository.findAll(any(Specification.class))).thenReturn(machineHistoryList);
+        when(machineHistoryRepository.findAll(ArgumentMatchers.<Specification<MachineHistory>> any())).thenReturn(machineHistoryList);
 
         var results = machineHistoryDataProvider.getMachineUsage(startDate, endDate);
         assertEquals(machineUsage, results);
-        //verify(machineHistoryRepository).findAll();
+    }
+
+    @Test
+    void getMachineProgress() {
+        var member = EntityGenerator.getMember();
+        var machine = EntityGenerator.getMachine();
+        List<MachineHistory> machineUsageList = List.of(
+                EntityGenerator.getMachineHistory(machine, member),
+                EntityGenerator.getMachineHistory(machine, member)
+        );
+        when(machineHistoryRepository.findAll(ArgumentMatchers.<Specification<MachineHistory>> any(), any(Sort.class))).thenReturn(machineUsageList);
+        var result = machineHistoryDataProvider.getMachineProgress(LocalDateTime.MIN, LocalDateTime.MAX, member.getId(), machine.getId());
+        assertTrue(result.containsKey(machine.getName()));
+        assertEquals(1, result.size());
+        assertEquals(2, result.get(machine.getName()).size());
+    }
+    
+    @Test
+    void shouldGetNumberOfWorkoutDays() {
+        var machine = EntityGenerator.getMachine();
+        var member = EntityGenerator.getMember();
+        var machineHistoryOne = EntityGenerator.getMachineHistory(machine, member);
+        var machineHistoryTwo = EntityGenerator.getMachineHistory(machine, member);
+        var machineHistoryThree = EntityGenerator.getMachineHistory(machine, member);
+
+        var localDateTime = LocalDateTime.now();
+
+        machineHistoryOne.setWorkoutDate(localDateTime.plusHours(1));
+        machineHistoryTwo.setWorkoutDate(localDateTime.plusHours(2));
+        machineHistoryTwo.setWorkoutDate(localDateTime.plusDays(1));
+
+        when(machineHistoryRepository.findAll(ArgumentMatchers.<Specification<MachineHistory>>any())).thenReturn(List.of(
+                machineHistoryOne,
+                machineHistoryTwo,
+                machineHistoryThree
+        ));
+
+        var result = machineHistoryDataProvider.getNumberOfWorkoutDays(localDateTime.minusDays(1), localDateTime.plusDays(2), member.getId());
+
+        assertEquals(2, result);
     }
 }

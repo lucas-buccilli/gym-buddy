@@ -2,6 +2,7 @@ package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.models.Period;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
+import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
 import com.example.gymbuddy.infrastructure.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ public class ReportService implements IReportService {
     private final IReportMachineUsageService reportMachineUsageService;
     private final IReportActiveMembershipsService reportActiveMembershipsService;
     private final IReportNumberOfVisitorsService reportNumberOfVisitorsService;
+    private final IReportMachineProgressService reportMachineProgress;
+    private final IReportNumberOfWorkoutDaysService reportNumberOfWorkoutDays;
 
     @Override
     public AdminReportDto getAdminReport(LocalDateTime startDate, LocalDateTime endDate) {
@@ -32,5 +35,20 @@ public class ReportService implements IReportService {
 
         services.forEach(Runnable::run);
         return adminReportDto;
+    }
+
+    @Override
+    public UserReportDto getUserReport(LocalDateTime startDate, LocalDateTime endDate, Integer memberId, Integer machineId) {
+        var userReportDto = new UserReportDto();
+        Period period = new Period(startDate, endDate);
+
+        List<Runnable> services = List.of(
+                () -> reportDateService.addStartDate(userReportDto, period),
+                () -> reportDateService.addEndDate(userReportDto, period),
+                () -> reportMachineProgress.addMachineProgress(userReportDto, period, memberId, machineId),
+                () -> reportNumberOfWorkoutDays.addNumberOfWorkoutDays(userReportDto, period, memberId)
+        );
+        services.forEach(Runnable::run);
+        return userReportDto;
     }
 }

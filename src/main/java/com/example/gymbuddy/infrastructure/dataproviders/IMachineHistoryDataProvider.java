@@ -19,4 +19,8 @@ public interface IMachineHistoryDataProvider {
     Integer getNumberOfVisitorsWithinTimeframe(LocalDateTime startDate, LocalDateTime endDate);
 
     Map<String, Long> getMachineUsage(LocalDateTime startDate, LocalDateTime endDate);
+
+    Map<String, List<MachineHistoryDao>> getMachineProgress(LocalDateTime startDate, LocalDateTime endDate, Integer memberId, Integer machineId);
+
+    Integer getNumberOfWorkoutDays(LocalDateTime startDate, LocalDateTime endDate, Integer memberId);
 }

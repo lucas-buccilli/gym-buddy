@@ -37,7 +37,7 @@ public class MachineHistoryController {
         if(!errors.isEmpty()) {
             throw new InvalidRequestException(errors);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(machineHistoryService.addMachineHistory(machineId, memberId, machineHistoryDao));
+        return ResponseEntity.status(HttpStatus.CREATED).body(machineHistoryService.addMachineHistory(memberId, machineId, machineHistoryDao));
     }
 
     @RequestMapping(path = "/latest", method = RequestMethod.GET)
