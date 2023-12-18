@@ -45,10 +45,10 @@ public class MachineHistoryRepositoryIntegrationTest {
     void shouldFindMachineHistoryBySpecification() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
+        machine = machineRepository.save(machine);
+        member = memberRepository.save(member);
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
-        machineRepository.save(machine);
-        memberRepository.save(member);
-        machineHistoryRepository.save(machineHistory);
+        machineHistory = machineHistoryRepository.save(machineHistory);
         var specification = MachineHistorySpecificationBuilder.builder()
                 .hasMachineId(machine.getId())
                 .hasMemberId(member.getId())
@@ -75,10 +75,10 @@ public class MachineHistoryRepositoryIntegrationTest {
     void shouldFindMachineHistoryBySpecificationWithoutWorkoutDate() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
+        machine = machineRepository.save(machine);
+        member = memberRepository.save(member);
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
-        machineRepository.save(machine);
-        memberRepository.save(member);
-        machineHistoryRepository.save(machineHistory);
+        machineHistory = machineHistoryRepository.save(machineHistory);
         var specification = MachineHistorySpecificationBuilder.builder()
                 .hasMachineId(machine.getId())
                 .hasMemberId(member.getId())
@@ -92,6 +92,8 @@ public class MachineHistoryRepositoryIntegrationTest {
     void shouldReturnLatestWorkout() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
+        machine = machineRepository.save(machine);
+        member = memberRepository.save(member);
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
         var machineHistoryLatest = EntityGenerator.getMachineHistory(machine, member);
         machineRepository.save(machine);
@@ -105,15 +107,14 @@ public class MachineHistoryRepositoryIntegrationTest {
         assertEquals(machineHistoryLatest.getWorkoutDate(), result.get().getWorkoutDate());
     }
 
-
-
     @Test
     void shouldReturnWorkoutBetweenDates() {
         var machine = EntityGenerator.getMachine();
         var member = EntityGenerator.getMember();
+        machine = machineRepository.save(machine);
+        member = memberRepository.save(member);
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
-        machineRepository.save(machine);
-        memberRepository.save(member);
+        machineHistory = machineHistoryRepository.save(machineHistory);
         machineHistoryRepository.save(machineHistory);
 
         var result = machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()

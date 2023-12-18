@@ -22,7 +22,7 @@ public class MachineService implements IMachineService {
     @Override
     public MachineDao addMachine(MachineDao machineDao) {
         var exists = machineDataProvider.findByName(machineDao.getName()).isPresent();
-        if(exists) throw new AlreadyExistsException(machineDao);
+        if(exists) throw new AlreadyExistsException(machineDao.getClass(), machineDao.getName());
         return machineDataProvider.addMachine(machineDao);
     }
 }

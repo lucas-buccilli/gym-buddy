@@ -2,10 +2,8 @@ package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.models.Period;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
-import com.example.gymbuddy.infrastructure.services.IReportActiveMembershipsService;
-import com.example.gymbuddy.infrastructure.services.IReportDateService;
-import com.example.gymbuddy.infrastructure.services.IReportMachineUsageService;
-import com.example.gymbuddy.infrastructure.services.IReportNumberOfVisitorsService;
+import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
+import com.example.gymbuddy.infrastructure.services.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -32,6 +30,11 @@ class ReportServiceTest {
     IReportActiveMembershipsService reportActiveMembershipsService;
     @Mock
     IReportNumberOfVisitorsService reportNumberOfVisitorsService;
+    @Mock
+    IReportMachineProgressService reportMachineProgressService;
+
+    @Mock
+    IReportNumberOfWorkoutDaysService reportNumberOfWorkoutDaysService;
 
     @Test
     void shouldPopulateAdminReport() {
@@ -50,5 +53,22 @@ class ReportServiceTest {
         verify(reportNumberOfVisitorsService).addNumberOfVisitors(same(dto), eq(period));
         verify(reportActiveMembershipsService).addActiveMemberships(same(dto), eq(period));
         verify(reportMachineUsageService).addMachineUsage(same(dto), eq(period));
+    }
+
+    @Test
+    void shouldPopulateUserReport() {
+        var dtoCaptor = ArgumentCaptor.forClass(UserReportDto.class);
+        var period = new Period(LocalDateTime.MAX, LocalDateTime.MIN);
+        UserReportDto dto;
+        var memberId = 1;
+        var machineId = 2;
+        reportService.getUserReport(period.startDate(), period.endDate(), memberId, machineId);
+
+        verify(reportDateService).addStartDate(dtoCaptor.capture(), eq(period));
+        assertNotNull(dtoCaptor.getValue());
+        dto = dtoCaptor.getValue();
+
+        verify(reportDateService).addEndDate(same(dto), eq(period));
+        verify(reportMachineProgressService).addMachineProgress(same(dto), eq(period), eq(memberId), eq(machineId));
     }
 }

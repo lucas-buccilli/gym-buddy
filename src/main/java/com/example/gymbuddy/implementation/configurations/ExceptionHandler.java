@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.configurations;
 
+import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,19 @@ public class ExceptionHandler {
                         request
                 ),
                 HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<?> validationExceptionHandler(AlreadyExistsException e, HttpServletRequest request) {
+
+        return new ResponseEntity<>(
+                new ExceptionResponse(
+                        HttpStatus.BAD_REQUEST,
+                        "Already Exists Exception",
+                        e.getMessage(),
+                        request
+                ),
+                HttpStatus.BAD_REQUEST);
     }
 
     @Data

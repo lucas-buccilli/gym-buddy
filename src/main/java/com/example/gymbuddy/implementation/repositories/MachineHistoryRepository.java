@@ -12,4 +12,7 @@ public interface MachineHistoryRepository extends JpaRepository<MachineHistory, 
      public Optional<MachineHistory> findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(Integer memberId, Integer machineId);
 
      public Integer countByWorkoutDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+     //public Integer countDistinctByWorkoutDateIsBetweenAndMemberId(LocalDateTime startDate, LocalDateTime endDate, Integer memberId);
+
 }

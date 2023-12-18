@@ -12,8 +12,8 @@ public class AlreadyExistsException extends RuntimeException{
         NAME_MAP.put(MachineDao.class, "Machine");
     }
 
-    public AlreadyExistsException(Dao dao) {
-        super(getNameFromClass(dao.getClass()) + " already exists with id: " + dao.getId());
+    public AlreadyExistsException(Class<? extends Dao> daoClass, String identifier) {
+        super(getNameFromClass(daoClass) + " already exists with identifier: " + identifier);
     }
 
     private static String getNameFromClass(Class<?> clazz) {
