@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -62,7 +61,7 @@ public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
 
     @Override
     public Integer getNumberOfVisitorsWithinTimeframe(LocalDateTime startDate, LocalDateTime endDate) {
-        return machineHistoryRepository.countByWorkoutDateBetween(startDate, endDate);
+        return machineHistoryRepository.countFindDistinctMemberIdByWorkoutDateBetween(startDate, endDate);
     }
 
     @Override

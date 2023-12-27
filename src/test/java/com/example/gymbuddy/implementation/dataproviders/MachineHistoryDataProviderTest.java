@@ -122,10 +122,10 @@ public class MachineHistoryDataProviderTest {
         LocalDateTime startDate = LocalDateTime.MIN;
         LocalDateTime endDate = LocalDateTime.MAX;
 
-        when(machineHistoryRepository.countByWorkoutDateBetween(any(), any())).thenReturn(1);
+        when(machineHistoryRepository.countFindDistinctMemberIdByWorkoutDateBetween(any(), any())).thenReturn(1);
 
         assertEquals(count, machineHistoryDataProvider.getNumberOfVisitorsWithinTimeframe(startDate, endDate));
-        verify(machineHistoryRepository).countByWorkoutDateBetween(startDate, endDate);
+        verify(machineHistoryRepository).countFindDistinctMemberIdByWorkoutDateBetween(startDate, endDate);
     }
 
     @Test
