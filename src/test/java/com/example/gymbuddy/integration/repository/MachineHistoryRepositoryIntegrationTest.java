@@ -7,6 +7,7 @@ import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.integration.DbContainer;
 import com.example.gymbuddy.integration.EntityGenerator;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @SpringBootTest
+@Tag("IntegrationTests")
 public class MachineHistoryRepositoryIntegrationTest {
     @Container
     public static DbContainer dbContainer = DbContainer.getInstance();

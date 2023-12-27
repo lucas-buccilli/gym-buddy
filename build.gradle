@@ -63,8 +63,20 @@ jacoco {
 }
 
 test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
+    useJUnitPlatform{
+    }
+}
+
+tasks.register("integrationTests", Test) {
+    useJUnitPlatform{
+        includeTags('IntegrationTests')
+    }
+}
+
+tasks.register("unitTests", Test) {
+    useJUnitPlatform{
+        excludeTags('IntegrationTests')
+    }
 }
 
 def exclusions = [
@@ -89,7 +101,6 @@ jacocoTestReport {
 
 jacocoTestCoverageVerification {
     dependsOn 'clean'
-    dependsOn 'test'
     dependsOn 'jacocoTestReport'
     tasks.findByName('test').mustRunAfter 'clean'
     tasks.findByName('jacocoTestReport').mustRunAfter 'test'
