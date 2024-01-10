@@ -2,6 +2,7 @@ package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.dataproviders.IMachineDataProvider;
 import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
+import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
 import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,10 @@ public class MachineService implements IMachineService {
         var exists = machineDataProvider.findByName(machineDao.getName()).isPresent();
         if(exists) throw new AlreadyExistsException(machineDao.getClass(), machineDao.getName());
         return machineDataProvider.addMachine(machineDao);
+    }
+
+    @Override
+    public void deleteMachineByName(String name) {
+        machineDataProvider.deleteMachine(machineDataProvider.findByName(name).orElseThrow(() -> new MachineNotFoundException(name)).getId());
     }
 }

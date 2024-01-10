@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.dataproviders;
 import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.infrastructure.dataproviders.IMachineDataProvider;
 import com.example.gymbuddy.infrastructure.entities.Machine;
+import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
 import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -38,5 +39,10 @@ public class MachineDataProvider implements IMachineDataProvider {
     @Override
     public Optional<MachineDao> findByName(String name) {
         return machineRepository.findByName(name).map(machine -> modelMapper.map(machine, MachineDao.class));
+    }
+
+    @Override
+    public void deleteMachine(int machineId) {
+        machineRepository.deleteById(machineId);
     }
 }

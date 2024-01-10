@@ -4,37 +4,14 @@ package com.example.gymbuddy.integration;
 import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
-import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Container;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@IntegrationTest
-public class UserReportIntegrationTest {
-    @Container
-    public static DbContainer dbContainer = DbContainer.getInstance();
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private TestDataManager testDataManager;
-
-    @AfterEach
-    void afterEach() {
-        testDataManager.deleteAllData();
-    }
+public class UserReportIntegrationTest extends IntegrationBase{
 
     @Test
     void generateUserReport() throws Exception {
@@ -144,41 +121,5 @@ public class UserReportIntegrationTest {
         assertEquals(workoutDate.plusDays(1), reportWithBenchHistories.getEndDate());
     }
 
-    private MemberDao createMember(MemberDao memberDao) throws Exception {
-        var result = mvc.perform(post("/members")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(memberDao)))
-                .andReturn();
 
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDao.class);
-    }
-
-    private MachineDao createMachine(MachineDao machineDao) throws Exception {
-        var result = mvc.perform(post("/machines")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(machineDao)))
-                .andReturn();
-
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MachineDao.class);
-    }
-
-    private MachineHistoryDao createMachineHistory(int memberId, int machineId, MachineHistoryDao machineHistoryDao) throws Exception {
-        var result = mvc.perform(post("/members/" + memberId + "/machines/" + machineId + "/history")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(machineHistoryDao)))
-                .andReturn();
-
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MachineHistoryDao.class);
-    }
-
-    private UserReportDto getUserReport(Integer memberId, Integer machineId, LocalDateTime startDate, LocalDateTime endDate) throws Exception {
-        var result = mvc.perform(get("/reports/user")
-                        .param("startDate", startDate.toString())
-                        .param("endDate", endDate.toString())
-                        .param("memberId", Integer.toString(memberId))
-                        .param("machineId", Integer.toString(machineId)))
-                .andReturn();
-
-        return objectMapper.readValue(result.getResponse().getContentAsString(), UserReportDto.class);
-    }
 }

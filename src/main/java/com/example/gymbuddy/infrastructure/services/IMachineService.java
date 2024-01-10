@@ -8,4 +8,6 @@ public interface IMachineService {
     List<MachineDao> findAll();
 
     MachineDao addMachine(MachineDao machineDao);
+
+    void deleteMachineByName(String name);
 }

@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.dataproviders;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.infrastructure.entities.Member;
+import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
 import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,11 +16,9 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberDataProviderTest {
@@ -62,5 +61,14 @@ public class MemberDataProviderTest {
         memberDataProvider.findById(111);
         verify(memberRepository).findById(111);
         verify(modelMapper).map(member, MemberDao.class);
+    }
+
+    @Test
+    public void shouldDeleteMemberById() {
+        int memberId = 32;
+
+        doNothing().when(memberRepository).deleteById(anyInt());
+        memberDataProvider.deleteMember(memberId);
+        verify(memberRepository).deleteById(memberId);
     }
 }
