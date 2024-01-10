@@ -2,6 +2,7 @@ package com.example.gymbuddy.implementation.dataproviders;
 
 import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.infrastructure.entities.Machine;
+import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
 import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,5 +73,12 @@ public class MachineDataProviderTest {
         assertTrue(machineDto.isPresent());
         assertEquals(machine.getName(), machineDto.get().getName());
         verify(machineRepository).findByName("smith");
+    }
+
+    @Test
+    void shouldDeleteMachine() {
+
+        machineDataProvider.deleteMachine(1);
+        verify(machineRepository).deleteById(1);
     }
 }

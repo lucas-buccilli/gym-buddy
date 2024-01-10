@@ -14,4 +14,6 @@ public interface IMachineDataProvider {
     Optional<MachineDao> findById(Integer machineId);
 
     Optional<MachineDao> findByName(String name);
+
+    void deleteMachine(int machineId);
 }

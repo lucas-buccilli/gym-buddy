@@ -25,4 +25,12 @@ public class MachineController {
     public ResponseEntity<MachineDao> addMachine(@Valid @RequestBody MachineDao machineDao) {
         return ResponseEntity.status(HttpStatus.CREATED).body(machineService.addMachine(machineDao));
     }
+
+    @DeleteMapping
+    public ResponseEntity<MachineDao> deleteMachine(@Valid @RequestBody DeleteRequest request) {
+        machineService.deleteMachineByName(request.name);
+        return ResponseEntity.noContent().build();
+    }
+
+    public record DeleteRequest(String name) {} ;
 }

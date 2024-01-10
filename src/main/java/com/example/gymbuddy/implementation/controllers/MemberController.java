@@ -26,5 +26,9 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(memberDao));
     }
 
-
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable int id) {
+        memberService.deleteMember(id);
+        return ResponseEntity.noContent().build();
+    }
 }

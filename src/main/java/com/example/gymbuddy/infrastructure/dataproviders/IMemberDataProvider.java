@@ -11,4 +11,6 @@ public interface IMemberDataProvider {
     MemberDao addMember(MemberDao memberDao);
 
     Optional<MemberDao> findById(Integer memberId);
+
+    void deleteMember(int id);
 }

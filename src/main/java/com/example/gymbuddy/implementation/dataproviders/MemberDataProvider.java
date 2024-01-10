@@ -34,4 +34,9 @@ public class MemberDataProvider implements IMemberDataProvider {
     public Optional<MemberDao> findById(Integer memberId) {
         return memberRepository.findById(memberId).map(member -> modelMapper.map(member, MemberDao.class));
     }
+
+    @Override
+    public void deleteMember(int id) {
+        memberRepository.deleteById(id);
+    }
 }

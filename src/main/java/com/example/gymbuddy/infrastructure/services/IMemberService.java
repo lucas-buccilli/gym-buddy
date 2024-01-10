@@ -8,4 +8,6 @@ public interface IMemberService {
     List<MemberDao> findAll();
 
     MemberDao addMember(MemberDao memberDao);
+
+    void deleteMember(int id);
 }
