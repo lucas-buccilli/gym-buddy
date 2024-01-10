@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.configurations;
 import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
+import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,8 +61,20 @@ public class ExceptionHandler {
         log.error(e.name);
         return new ResponseEntity<>(
                 new ExceptionResponse(
-                        HttpStatus.BAD_REQUEST,
-                        "Invalid Request Exception",
+                        HttpStatus.NOT_FOUND,
+                        "Machine Not Found",
+                        e.getMessage(),
+                        request
+                ),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<?> memberNotFoundExceptionHandler(MemberNotFoundException e, HttpServletRequest request) {
+        return new ResponseEntity<>(
+                new ExceptionResponse(
+                        HttpStatus.NOT_FOUND,
+                        "Member Not Found",
                         e.getMessage(),
                         request
                 ),
