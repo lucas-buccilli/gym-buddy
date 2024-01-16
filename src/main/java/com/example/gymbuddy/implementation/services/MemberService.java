@@ -28,4 +28,11 @@ public class MemberService implements IMemberService {
     public void deleteMember(int id) {
         memberDataProvider.deleteMember(memberDataProvider.findById(id).orElseThrow(() -> new MemberNotFoundException(id)).getId());
     }
+
+    @Override
+    public MemberDao editMember(int id, MemberDao memberDao) {
+        memberDao.setId(memberDataProvider.findById(id).orElseThrow(() -> new MemberNotFoundException(id)).getId());
+        return memberDataProvider.editMember(memberDao);
+    }
+
 }

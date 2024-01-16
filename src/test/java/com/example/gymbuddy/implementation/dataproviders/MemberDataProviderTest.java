@@ -71,4 +71,17 @@ public class MemberDataProviderTest {
         memberDataProvider.deleteMember(memberId);
         verify(memberRepository).deleteById(memberId);
     }
+
+    @Test
+    public void shouldEditMember() {
+        Member member = new Member();
+        member.setFirstName("Jim");
+        var memberDao = modelMapper.map(member, MemberDao.class);
+        when(memberRepository.save(any())).thenReturn(member);
+
+        var result = memberDataProvider.editMember(memberDao);
+        verify(memberRepository).save(member);
+
+        assertEquals(memberDao, result);
+    }
 }

@@ -13,4 +13,6 @@ public interface IMemberDataProvider {
     Optional<MemberDao> findById(Integer memberId);
 
     void deleteMember(int id);
+
+    MemberDao editMember(MemberDao memberDao);
 }

@@ -39,4 +39,9 @@ public class MemberDataProvider implements IMemberDataProvider {
     public void deleteMember(int id) {
         memberRepository.deleteById(id);
     }
+
+    @Override
+    public MemberDao editMember(MemberDao memberDao) {
+        return modelMapper.map(memberRepository.save(modelMapper.map(memberDao, Member.class)), MemberDao.class);
+    }
 }

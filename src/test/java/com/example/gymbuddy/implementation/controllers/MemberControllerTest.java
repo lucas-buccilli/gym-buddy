@@ -13,9 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,5 +56,20 @@ class MemberControllerTest {
                 .andDo(print())
                 .andExpect(status().is(201))
                 .andExpect(content().string(objectMapper.writeValueAsString(memberDto)));
+    }
+
+    @Test
+    public void shouldEditMember() throws Exception {
+        MemberDao memberDao = MemberDao.builder()
+                .firstName("FirstName").lastName("SecondName").phoneNumber("0000000000").build();
+
+        when(memberService.editMember(anyInt(), any())).thenReturn(memberDao);
+
+        mockMvc.perform(put("/members/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(memberDao)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(objectMapper.writeValueAsString(memberDao)));
     }
 }

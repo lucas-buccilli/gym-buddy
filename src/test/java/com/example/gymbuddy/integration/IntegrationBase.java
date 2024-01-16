@@ -5,6 +5,7 @@ import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
 import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -118,5 +119,15 @@ public abstract class IntegrationBase {
         mvc.perform(delete("/members/" + id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+
+    public MemberDao editMember(int id, MemberDao memberDao) throws Exception {
+        var result = mvc.perform(put("/members/" + id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(memberDao)))
+                .andReturn();
+
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDao.class);
     }
 }

@@ -10,4 +10,6 @@ public interface IMemberService {
     MemberDao addMember(MemberDao memberDao);
 
     void deleteMember(int id);
+
+    MemberDao editMember(int id, MemberDao memberDao);
 }

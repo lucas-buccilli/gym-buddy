@@ -31,4 +31,10 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<MemberDao> editMember(@PathVariable int id,
+                                                @Valid @RequestBody MemberDao memberDao) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.editMember(id, memberDao));
+    }
 }

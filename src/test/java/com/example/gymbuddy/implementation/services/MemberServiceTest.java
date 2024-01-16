@@ -62,12 +62,39 @@ public class MemberServiceTest {
     }
 
     @Test
-    void shouldThrowErrorMemberNotExist() {
+    void shouldThrowErrorMemberNotExistOnDelete() {
         int memberId = 34;
         when(memberDataProvider.findById(anyInt())).thenReturn(Optional.empty());
         //revisit this
         var result = assertThrows(MemberNotFoundException.class, () -> memberService.deleteMember(memberId));
         verify(memberDataProvider).findById(memberId);
         assertEquals("Member Not Found: id = 34", result.getMessage());
+    }
+
+    @Test
+    void shouldEditExistingMember() {
+        var id = 75;
+        MemberDao memberDao = MemberDao.builder().id(id).build();
+        MemberDao memberDaoUpdatedInfo = MemberDao.builder().firstName("Name").build();
+
+        when(memberDataProvider.findById(anyInt())).thenReturn(Optional.of(memberDao));
+        when(memberDataProvider.editMember(any())).thenReturn(memberDaoUpdatedInfo);
+
+        var result = memberService.editMember(id, memberDaoUpdatedInfo);
+
+        verify(memberDataProvider).findById(id);
+        verify(memberDataProvider).editMember(memberDaoUpdatedInfo);
+        assertEquals(id, result.getId());
+        assertEquals(memberDaoUpdatedInfo.getFirstName(), result.getFirstName());
+    }
+    @Test
+    void shouldThrowErrorMemberNotExistOnEdit() {
+        MemberDao memberDao = MemberDao.builder().id(46).build();
+        when(memberDataProvider.findById(any())).thenReturn(Optional.empty());
+
+        var result = assertThrows(MemberNotFoundException.class, () -> memberService.editMember(memberDao.getId(), memberDao));
+
+        verify(memberDataProvider).findById(memberDao.getId());
+        assertEquals("Member Not Found: id = 46", result.getMessage());
     }
 }
