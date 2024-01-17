@@ -1,9 +1,9 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMachineDao;
 import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
 import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class MachineServiceTest {
 
     @Mock
-    IMachineDataProvider machineDataProvider;
+    IMachineDao machineDataProvider;
 
     @InjectMocks
     MachineService machineService;
@@ -31,7 +31,7 @@ class MachineServiceTest {
 
     @Test
     void findAll() {
-        var machineDaos = List.of(new MachineDao());
+        var machineDaos = List.of(new MachineDto());
         when(machineDataProvider.findAll()).thenReturn(machineDaos);
         //when
         var result = machineService.findAll();
@@ -42,7 +42,7 @@ class MachineServiceTest {
 
     @Test
     void addMachine() {
-        var machineDto = new MachineDao();
+        var machineDto = new MachineDto();
 
         when(machineDataProvider.addMachine(any())).thenReturn(machineDto);
         var result = machineService.addMachine(machineDto);
@@ -53,7 +53,7 @@ class MachineServiceTest {
 
     @Test
     public void addAlreadyExistingMachineThrowsException() {
-        var machineDto = MachineDao.builder().id(1).name("smith").build();
+        var machineDto = MachineDto.builder().id(1).name("smith").build();
         when(machineDataProvider.findByName(any())).thenReturn(Optional.of(machineDto));
         var result = assertThrows(AlreadyExistsException.class, () -> machineService.addMachine(machineDto));
         assertEquals("Machine already exists with identifier: smith", result.getMessage());
@@ -62,7 +62,7 @@ class MachineServiceTest {
     @Test
     public void shouldDeleteMachineByName() {
         var name = "treadmill";
-        var machineDao = MachineDao.builder().name(name).id(1).build();
+        var machineDao = MachineDto.builder().name(name).id(1).build();
 
         when(machineDataProvider.findByName(any())).thenReturn(Optional.of(machineDao));
 

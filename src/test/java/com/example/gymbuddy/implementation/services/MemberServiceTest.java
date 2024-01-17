@@ -1,8 +1,8 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMemberDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,14 +21,14 @@ import static org.mockito.Mockito.*;
 public class MemberServiceTest {
 
     @Mock
-    IMemberDataProvider memberDataProvider;
+    IMemberDao memberDataProvider;
 
     @InjectMocks
     MemberService memberService;
 
     @Test
     void findAll() {
-        var memberDtoList = List.of(new MemberDao());
+        var memberDtoList = List.of(new MemberDto());
 
         when(memberDataProvider.findAll()).thenReturn(memberDtoList);
 
@@ -40,7 +40,7 @@ public class MemberServiceTest {
 
     @Test
     void addMember() {
-        var memberDto = MemberDao.builder().firstName("Sam").build();
+        var memberDto = MemberDto.builder().firstName("Sam").build();
 
         when(memberDataProvider.addMember(any())).thenReturn(memberDto);
 
@@ -52,7 +52,7 @@ public class MemberServiceTest {
 
     @Test
     void shouldDeleteExistingMember() {
-        var memberDto = MemberDao.builder().id(65).build();
+        var memberDto = MemberDto.builder().id(65).build();
 
         when(memberDataProvider.findById(anyInt())).thenReturn(Optional.of(memberDto));
 
@@ -74,13 +74,13 @@ public class MemberServiceTest {
     @Test
     void shouldEditExistingMember() {
         var id = 75;
-        MemberDao memberDao = MemberDao.builder().id(id).build();
-        MemberDao memberDaoUpdatedInfo = MemberDao.builder().firstName("Name").build();
+        MemberDto memberDao = MemberDto.builder().id(id).build();
+        MemberDto memberDaoUpdatedInfo = MemberDto.builder().firstName("Name").build();
 
         when(memberDataProvider.findById(anyInt())).thenReturn(Optional.of(memberDao));
         when(memberDataProvider.editMember(any())).thenReturn(memberDaoUpdatedInfo);
 
-        var result = memberService.editMember(id, memberDaoUpdatedInfo);
+        var result = memberService.replaceMember(id, memberDaoUpdatedInfo);
 
         verify(memberDataProvider).findById(id);
         verify(memberDataProvider).editMember(memberDaoUpdatedInfo);
@@ -89,10 +89,10 @@ public class MemberServiceTest {
     }
     @Test
     void shouldThrowErrorMemberNotExistOnEdit() {
-        MemberDao memberDao = MemberDao.builder().id(46).build();
+        MemberDto memberDao = MemberDto.builder().id(46).build();
         when(memberDataProvider.findById(any())).thenReturn(Optional.empty());
 
-        var result = assertThrows(MemberNotFoundException.class, () -> memberService.editMember(memberDao.getId(), memberDao));
+        var result = assertThrows(MemberNotFoundException.class, () -> memberService.replaceMember(memberDao.getId(), memberDao));
 
         verify(memberDataProvider).findById(memberDao.getId());
         assertEquals("Member Not Found: id = 46", result.getMessage());

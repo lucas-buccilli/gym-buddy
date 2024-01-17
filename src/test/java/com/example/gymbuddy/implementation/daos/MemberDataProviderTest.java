@@ -1,10 +1,9 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.infrastructure.entities.Member;
-import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.*;
 public class MemberDataProviderTest {
 
     @InjectMocks
-    private MemberDataProvider memberDataProvider;
+    private MemberDao memberDataProvider;
     @Mock
     private MemberRepository memberRepository;
     @Spy
@@ -33,13 +32,13 @@ public class MemberDataProviderTest {
     @Test
     public void shouldFindAll() {
         var members = List.of(new Member());
-        var memberDtos = List.of(MemberDao.builder().build());
+        var memberDtos = List.of(MemberDto.builder().build());
 
         when(memberRepository.findAll()).thenReturn(members);
 
         assertEquals(memberDtos, memberDataProvider.findAll());
         verify(memberRepository).findAll();
-        verify(modelMapper).map(eq(members.get(0)), eq(MemberDao.class));
+        verify(modelMapper).map(eq(members.get(0)), eq(MemberDto.class));
     }
 
     @Test
@@ -47,7 +46,7 @@ public class MemberDataProviderTest {
         var member = new Member();
         member.setFirstName("John");
         when(memberRepository.save(any())).thenReturn(member);
-        assertNotNull(memberDataProvider.addMember(MemberDao.builder().firstName("John").build()));
+        assertNotNull(memberDataProvider.addMember(MemberDto.builder().firstName("John").build()));
         verify(memberRepository).save(member);
     }
 
@@ -60,7 +59,7 @@ public class MemberDataProviderTest {
 
         memberDataProvider.findById(111);
         verify(memberRepository).findById(111);
-        verify(modelMapper).map(member, MemberDao.class);
+        verify(modelMapper).map(member, MemberDto.class);
     }
 
     @Test
@@ -76,7 +75,7 @@ public class MemberDataProviderTest {
     public void shouldEditMember() {
         Member member = new Member();
         member.setFirstName("Jim");
-        var memberDao = modelMapper.map(member, MemberDao.class);
+        var memberDao = modelMapper.map(member, MemberDto.class);
         when(memberRepository.save(any())).thenReturn(member);
 
         var result = memberDataProvider.editMember(memberDao);

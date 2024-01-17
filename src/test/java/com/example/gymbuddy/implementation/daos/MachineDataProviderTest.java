@@ -1,9 +1,8 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.infrastructure.entities.Machine;
-import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class MachineDataProviderTest {
 
     @InjectMocks
-    private MachineDataProvider machineDataProvider;
+    private MachineDao machineDataProvider;
     @Mock
     private MachineRepository machineRepository;
     @Spy
@@ -33,12 +32,12 @@ public class MachineDataProviderTest {
     @Test
     void shouldFindAll() {
         var machines = List.of(new Machine());
-        var machineDtos = List.of(MachineDao.builder().build());
+        var machineDtos = List.of(MachineDto.builder().build());
 
         when(machineRepository.findAll()).thenReturn(machines);
         assertEquals(machineDtos, machineDataProvider.findAll());
         verify(machineRepository).findAll();
-        verify(modelMapper).map(eq(machines.get(0)), eq(MachineDao.class));
+        verify(modelMapper).map(eq(machines.get(0)), eq(MachineDto.class));
     }
 
     @Test
@@ -47,7 +46,7 @@ public class MachineDataProviderTest {
         machine.setName("Smith");
 
         when(machineRepository.save(any())).thenReturn(machine);
-        assertNotNull(machineDataProvider.addMachine(MachineDao.builder().name("Smith").build()));
+        assertNotNull(machineDataProvider.addMachine(MachineDto.builder().name("Smith").build()));
         verify(machineRepository).save(machine);
     }
 

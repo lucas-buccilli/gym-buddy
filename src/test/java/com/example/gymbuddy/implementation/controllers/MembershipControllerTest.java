@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import com.example.gymbuddy.infrastructure.services.IMembershipService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class MembershipControllerTest {
 
     @Test
     void findAll() throws Exception {
-        var membership = MembershipDao.builder().memberId(0).active(true).build();
+        var membership = MembershipDto.builder().memberId(0).active(true).build();
 
         when(membershipService.findAll()).thenReturn(List.of(membership));
         mockMvc.perform(get("/memberships"))
@@ -44,7 +44,7 @@ class MembershipControllerTest {
     @Test
     void addMembership() throws Exception {
 
-        var membershipDto = MembershipDao.builder().memberId(0).active(true).build();
+        var membershipDto = MembershipDto.builder().memberId(0).active(true).build();
         when(membershipService.addMembership(any())).thenReturn(membershipDto);
 
         mockMvc.perform(

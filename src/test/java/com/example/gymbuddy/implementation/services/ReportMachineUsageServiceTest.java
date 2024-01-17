@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.models.Period;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ReportMachineUsageServiceTest {
     @Mock
-    IMachineHistoryDataProvider machineHistoryDataProvider;
+    IMachineHistoryDao machineHistoryDataProvider;
 
     @InjectMocks
     ReportMachineUsageService reportMachineUsageService;

@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.validators.requests;
 
-import com.example.gymbuddy.implementation.dataproviders.MachineDataProvider;
-import com.example.gymbuddy.implementation.dataproviders.MemberDataProvider;
+import com.example.gymbuddy.implementation.daos.MachineDao;
+import com.example.gymbuddy.implementation.daos.MemberDao;
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,8 +12,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MachineHistoryRequestValidator {
-    private final MemberDataProvider memberDataProvider;
-    private final MachineDataProvider machineDataProvider;
+    private final MemberDao memberDataProvider;
+    private final MachineDao machineDataProvider;
 
 
     public List<ValidationError> validate(AddMachineHistoryRequest addMachineHistoryRequest) {

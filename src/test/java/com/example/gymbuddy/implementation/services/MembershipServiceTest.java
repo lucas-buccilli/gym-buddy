@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMembershipDataProvider;
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.infrastructure.daos.IMembershipDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import com.example.gymbuddy.infrastructure.services.IMembershipHistoryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +27,11 @@ class MembershipServiceTest {
     IMembershipHistoryService membershipHistoryService;
 
     @Mock
-    IMembershipDataProvider membershipDataProvider;
+    IMembershipDao membershipDataProvider;
 
     @Test
     void findAll() {
-        var membershipdDtoList = List.of(new MembershipDao());
+        var membershipdDtoList = List.of(new MembershipDto());
 
         when(membershipDataProvider.findAll()).thenReturn(membershipdDtoList);
 
@@ -43,7 +43,7 @@ class MembershipServiceTest {
 
     @Test
     void addMembership() {
-        var membershipDao = MembershipDao.builder().active(true).build();
+        var membershipDao = MembershipDto.builder().active(true).build();
 
         when(membershipDataProvider.addMembership(any())).thenReturn(membershipDao);
 

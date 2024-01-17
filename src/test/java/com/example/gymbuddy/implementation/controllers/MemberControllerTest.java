@@ -1,12 +1,14 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
+@Import(ModelMapperConfig.class)
 class MemberControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -32,7 +35,7 @@ class MemberControllerTest {
 
     @Test
     public void shouldReturnAllMembers() throws Exception {
-        var member = MemberDao.builder()
+        var member = MemberDto.builder()
                 .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
         when(memberService.findAll()).thenReturn(List.of(member));
 
@@ -46,7 +49,7 @@ class MemberControllerTest {
 
     @Test
     public void shouldAddMember() throws Exception {
-        var memberDto = MemberDao.builder()
+        var memberDto = MemberDto.builder()
                 .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
         when(memberService.addMember(any())).thenReturn(memberDto);
 
@@ -60,10 +63,10 @@ class MemberControllerTest {
 
     @Test
     public void shouldEditMember() throws Exception {
-        MemberDao memberDao = MemberDao.builder()
+        MemberDto memberDao = MemberDto.builder()
                 .firstName("FirstName").lastName("SecondName").phoneNumber("0000000000").build();
 
-        when(memberService.editMember(anyInt(), any())).thenReturn(memberDao);
+        when(memberService.replaceMember(anyInt(), any())).thenReturn(memberDao);
 
         mockMvc.perform(put("/members/10")
                 .contentType(MediaType.APPLICATION_JSON)

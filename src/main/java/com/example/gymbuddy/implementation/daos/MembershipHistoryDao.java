@@ -1,11 +1,11 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.repositories.MembershipHistoryRepository;
-import com.example.gymbuddy.infrastructure.dataproviders.IMembershipHistoryDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMembershipHistoryDao;
 import com.example.gymbuddy.infrastructure.entities.Membership;
 import com.example.gymbuddy.infrastructure.entities.MembershipHistory;
 import com.example.gymbuddy.infrastructure.entities.enums.MembershipOperation;
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class MembershipHistoryDataProvider implements IMembershipHistoryDataProvider {
+public class MembershipHistoryDao implements IMembershipHistoryDao {
     private final MembershipHistoryRepository membershipHistoryRepository;
     private final EntityManager entityManager;
     private final ModelMapper modelMapper;
 
     @Override
-    public void addHistory(MembershipDao membershipDao) {
+    public void addHistory(MembershipDto membershipDao) {
         var entity = new MembershipHistory();
         entity.setMembership(entityManager.getReference(Membership.class, membershipDao.getId()));
         entity.setOperation(membershipDao.isActive() ? MembershipOperation.ACTIVATED : MembershipOperation.DEACTIVATED);

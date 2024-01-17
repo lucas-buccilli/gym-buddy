@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.models.Period;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class ReportNumberOfWorkoutDaysServiceTest {
     ReportNumberOfWorkoutDaysService reportNumberOfWorkoutDaysService;
 
     @Mock
-    IMachineHistoryDataProvider machineHistoryDataProvider;
+    IMachineHistoryDao machineHistoryDataProvider;
 
     @Test
     void addNumberOfWorkoutDays() {

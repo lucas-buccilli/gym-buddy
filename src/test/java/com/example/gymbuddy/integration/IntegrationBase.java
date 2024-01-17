@@ -1,17 +1,15 @@
 package com.example.gymbuddy.integration;
 
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
@@ -36,38 +34,38 @@ public abstract class IntegrationBase {
         testDataManager.deleteAllData();
     }
 
-    public MemberDao createMember(MemberDao memberDao) throws Exception {
+    public MemberDto createMember(MemberDto memberDao) throws Exception {
         var result = mvc.perform(post("/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberDao)))
                 .andReturn();
 
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDao.class);
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
     }
 
-    public MemberDao createMember() {
+    public MemberDto createMember() {
         String firstName = RandomStringUtils.randomAlphabetic(6);
         String lastName = RandomStringUtils.randomAlphabetic(6);
         String phoneNumber = "9999999999";
         try {
-            return createMember(MemberDao.builder().firstName(firstName).lastName(lastName).phoneNumber(phoneNumber).build());
+            return createMember(MemberDto.builder().firstName(firstName).lastName(lastName).phoneNumber(phoneNumber).build());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public MachineDao createMachine(MachineDao machineDao) throws Exception {
+    public MachineDto createMachine(MachineDto machineDao) throws Exception {
         var result = mvc.perform(post("/machines")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(machineDao)))
                 .andReturn();
 
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MachineDao.class);
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MachineDto.class);
     }
 
-    public MachineHistoryDao createMachineHistory(Integer memberId, Integer machineId) {
+    public MachineHistoryDto createMachineHistory(Integer memberId, Integer machineId) {
 
-        MachineHistoryDao machineHistoryDao = MachineHistoryDao.builder()
+        MachineHistoryDto machineHistoryDao = MachineHistoryDto.builder()
                 .workoutDate(LocalDateTime.now())
                 .numberReps(Integer.valueOf(RandomStringUtils.randomNumeric(1)))
                 .maxWeight(Integer.valueOf(RandomStringUtils.randomNumeric(1)))
@@ -79,13 +77,13 @@ public abstract class IntegrationBase {
             throw new RuntimeException(e);
         }
     }
-    public MachineHistoryDao createMachineHistory(int memberId, int machineId, MachineHistoryDao machineHistoryDao) throws Exception {
+    public MachineHistoryDto createMachineHistory(int memberId, int machineId, MachineHistoryDto machineHistoryDao) throws Exception {
         var result = mvc.perform(post("/members/" + memberId + "/machines/" + machineId + "/history")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(machineHistoryDao)))
                 .andReturn();
 
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MachineHistoryDao.class);
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MachineHistoryDto.class);
     }
 
     public UserReportDto getUserReport(Integer memberId, Integer machineId, LocalDateTime startDate, LocalDateTime endDate) throws Exception {
@@ -122,12 +120,12 @@ public abstract class IntegrationBase {
     }
 
 
-    public MemberDao editMember(int id, MemberDao memberDao) throws Exception {
+    public MemberDto editMember(int id, MemberDto memberDao) throws Exception {
         var result = mvc.perform(put("/members/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(memberDao)))
                 .andReturn();
 
-        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDao.class);
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
     }
 }

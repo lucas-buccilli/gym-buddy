@@ -1,9 +1,9 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.repositories.MembershipRepository;
-import com.example.gymbuddy.infrastructure.dataproviders.IMembershipDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMembershipDao;
 import com.example.gymbuddy.infrastructure.entities.Membership;
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -12,21 +12,21 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MembershipDataProvider implements IMembershipDataProvider {
+public class MembershipDao implements IMembershipDao {
     private final MembershipRepository membershipRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public List<MembershipDao> findAll() {
+    public List<MembershipDto> findAll() {
         return membershipRepository.findAll().stream()
-                .map(membershipEntity -> modelMapper.map(membershipEntity, MembershipDao.class))
+                .map(membershipEntity -> modelMapper.map(membershipEntity, MembershipDto.class))
                 .toList();
     }
 
     @Override
-    public MembershipDao addMembership(MembershipDao membershipDao) {
+    public MembershipDto addMembership(MembershipDto membershipDao) {
         var membership = modelMapper.map(membershipDao, Membership.class);
-        return modelMapper.map(membershipRepository.save(membership), MembershipDao.class);
+        return modelMapper.map(membershipRepository.save(membership), MembershipDto.class);
     }
 
     @Override

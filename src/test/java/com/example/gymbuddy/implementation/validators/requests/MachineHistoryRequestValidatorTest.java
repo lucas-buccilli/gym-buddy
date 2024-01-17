@@ -1,9 +1,9 @@
 package com.example.gymbuddy.implementation.validators.requests;
 
-import com.example.gymbuddy.implementation.dataproviders.MachineDataProvider;
-import com.example.gymbuddy.implementation.dataproviders.MemberDataProvider;
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.implementation.daos.MachineDao;
+import com.example.gymbuddy.implementation.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,10 +24,10 @@ class MachineHistoryRequestValidatorTest {
     @InjectMocks
     MachineHistoryRequestValidator machineHistoryRequestValidator;
     @Mock
-    MemberDataProvider memberDataProvider;
+    MemberDao memberDataProvider;
 
     @Mock
-    MachineDataProvider machineDataProvider;
+    MachineDao machineDataProvider;
 
     @Test
     void shouldReturnValidationErrorsWhenMemberOrMachineDoesntExist() {
@@ -50,8 +50,8 @@ class MachineHistoryRequestValidatorTest {
         MachineHistoryRequestValidator.AddMachineHistoryRequest machineHistoryRequest
                 = new MachineHistoryRequestValidator.AddMachineHistoryRequest(1,3);
 
-        when(memberDataProvider.findById(any())).thenReturn(Optional.of(new MemberDao()));
-        when(machineDataProvider.findById(any())).thenReturn(Optional.of(new MachineDao()));
+        when(memberDataProvider.findById(any())).thenReturn(Optional.of(new MemberDto()));
+        when(machineDataProvider.findById(any())).thenReturn(Optional.of(new MachineDto()));
 
         var result = machineHistoryRequestValidator.validate(machineHistoryRequest);
         assertNotNull(result);

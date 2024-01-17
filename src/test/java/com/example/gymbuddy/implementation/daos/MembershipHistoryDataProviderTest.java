@@ -1,10 +1,10 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.repositories.MembershipHistoryRepository;
 import com.example.gymbuddy.infrastructure.entities.Membership;
 import com.example.gymbuddy.infrastructure.entities.MembershipHistory;
 import com.example.gymbuddy.infrastructure.entities.enums.MembershipOperation;
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class MembershipHistoryDataProviderTest {
 
     @InjectMocks
-    private MembershipHistoryDataProvider membershipHistoryDataProvider;
+    private MembershipHistoryDao membershipHistoryDataProvider;
 
     @Mock
     private MembershipHistoryRepository membershipHistoryRepository;
@@ -43,7 +43,7 @@ public class MembershipHistoryDataProviderTest {
         var membership = new Membership();
         when(entityManager.getReference(any(), anyInt())).thenReturn(membership);
 
-        var membershipDao = MembershipDao.builder()
+        var membershipDao = MembershipDto.builder()
                         .active(true)
                         .memberId(1)
                         .id(2)
@@ -63,7 +63,7 @@ public class MembershipHistoryDataProviderTest {
         var membership = new Membership();
         when(entityManager.getReference(any(), anyInt())).thenReturn(membership);
 
-        var membershipDao = MembershipDao.builder()
+        var membershipDao = MembershipDto.builder()
                 .active(false)
                 .memberId(1)
                 .id(2)

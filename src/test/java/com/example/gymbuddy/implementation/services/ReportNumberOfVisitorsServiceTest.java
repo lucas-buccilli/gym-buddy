@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.models.Period;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 class ReportNumberOfVisitorsServiceTest {
 
     @Mock
-    IMachineHistoryDataProvider machineHistoryDataProvider;
+    IMachineHistoryDao machineHistoryDataProvider;
 
     @InjectMocks
     ReportNumberOfVisitorsService reportNumberOfVisitorsService;

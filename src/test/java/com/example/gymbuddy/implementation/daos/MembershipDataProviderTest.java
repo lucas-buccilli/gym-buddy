@@ -1,10 +1,10 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.repositories.MembershipRepository;
 import com.example.gymbuddy.infrastructure.entities.Member;
 import com.example.gymbuddy.infrastructure.entities.Membership;
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class MembershipDataProviderTest {
     @InjectMocks
-    private MembershipDataProvider membershipDataProvider;
+    private MembershipDao membershipDataProvider;
     @Mock
     private MembershipRepository membershipRepository;
     @Spy
@@ -33,12 +33,12 @@ public class MembershipDataProviderTest {
     @Test
     void shouldFindAll() {
         var memberships = List.of(new Membership());
-        var membershipDtos = List.of(MembershipDao.builder().build());
+        var membershipDtos = List.of(MembershipDto.builder().build());
 
         when(membershipRepository.findAll()).thenReturn(memberships);
         assertEquals(membershipDtos, membershipDataProvider.findAll());
         verify(membershipRepository).findAll();
-        verify(modelMapper).map(eq(memberships.get(0)), eq(MembershipDao.class));
+        verify(modelMapper).map(eq(memberships.get(0)), eq(MembershipDto.class));
     }
 
     @Test
@@ -50,9 +50,9 @@ public class MembershipDataProviderTest {
 
         when(membershipRepository.save(any())).thenReturn(membership);
 
-        assertNotNull(membershipDataProvider.addMembership(MembershipDao.builder().memberId(member.getId()).build()));
+        assertNotNull(membershipDataProvider.addMembership(MembershipDto.builder().memberId(member.getId()).build()));
         verify(membershipRepository).save(membership);
-        verify(modelMapper).map(eq(membership), eq(MembershipDao.class));
+        verify(modelMapper).map(eq(membership), eq(MembershipDto.class));
     }
 
     @Test
