@@ -1,9 +1,9 @@
 package com.example.gymbuddy.integration;
 
 
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -19,26 +19,26 @@ public class AdminReportIntegrationTest extends IntegrationBase {
     @Test
     void generateAdminReport() throws Exception {
         var bench = createMachine(
-                MachineDao
+                MachineDto
                         .builder()
                         .name("bench")
                         .build()
         );
         var treadmill = createMachine(
-                MachineDao
+                MachineDto
                         .builder()
                         .name("treadmill")
                         .build()
         );
 
-        List<MemberDao> list = IntStream.range(0, 9).mapToObj(intValue -> createMember()).toList();
+        List<MemberDto> list = IntStream.range(0, 9).mapToObj(intValue -> createMember()).toList();
 
-        HashMap<Integer, List<MachineHistoryDao>> machineHistoriesMap = new HashMap<>();
+        HashMap<Integer, List<MachineHistoryDto>> machineHistoriesMap = new HashMap<>();
         list.forEach(member -> {
             IntStream.range(0, 3)
                     .mapToObj(intValue -> createMachineHistory(member.getId(), bench.getId()))
                     .forEach(machineHistory ->
-                            machineHistoriesMap.computeIfAbsent(member.getId(), k -> new ArrayList<MachineHistoryDao>())
+                            machineHistoriesMap.computeIfAbsent(member.getId(), k -> new ArrayList<MachineHistoryDto>())
                             .add(machineHistory)
                     );
         });

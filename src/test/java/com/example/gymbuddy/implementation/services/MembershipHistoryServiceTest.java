@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.implementation.dataproviders.MembershipHistoryDataProvider;
-import com.example.gymbuddy.infrastructure.models.daos.MembershipDao;
+import com.example.gymbuddy.implementation.daos.MembershipHistoryDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,14 +18,14 @@ import static org.mockito.Mockito.*;
 class MembershipHistoryServiceTest {
 
     @Mock
-    MembershipHistoryDataProvider membershipHistoryDataProvider;
+    MembershipHistoryDao membershipHistoryDataProvider;
 
     @InjectMocks
     MembershipHistoryService membershipHistoryService;
 
     @Test
     void addHistory() {
-        MembershipDao membershipDao = MembershipDao.builder().id(1).memberId(1).active(true).build();
+        MembershipDto membershipDao = MembershipDto.builder().id(1).memberId(1).active(true).build();
         doNothing().when(membershipHistoryDataProvider).addHistory(any());
 
         membershipHistoryService.addHistory(membershipDao);

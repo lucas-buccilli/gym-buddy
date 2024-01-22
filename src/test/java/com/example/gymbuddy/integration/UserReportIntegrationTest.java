@@ -1,9 +1,9 @@
 package com.example.gymbuddy.integration;
 
 
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
     @Test
     void generateUserReport() throws Exception {
         var bob =  createMember(
-                MemberDao.builder()
+                MemberDto.builder()
                     .firstName("Bob")
                     .lastName("TestLast")
                     .phoneNumber("0000000000")
@@ -24,13 +24,13 @@ public class UserReportIntegrationTest extends IntegrationBase{
         );
 
         var treadmill = createMachine(
-                MachineDao.builder()
+                MachineDto.builder()
                         .name("Treadmill")
                         .build()
         );
 
         var bench = createMachine(
-                MachineDao.builder()
+                MachineDto.builder()
                         .name("Bench")
                         .build()
         );
@@ -40,7 +40,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
         LocalDateTime nextDayWorkoutDate = workoutDate.plusDays(1);
 
         var firstTreadmillWorkout = createMachineHistory(bob.getId(), treadmill.getId(),
-                MachineHistoryDao.builder()
+                MachineHistoryDto.builder()
                         .maxWeight(1)
                         .workoutDate(workoutDate)
                         .numberSets(2)
@@ -50,7 +50,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
         );
 
         var secondTreadmillWorkout = createMachineHistory(bob.getId(), treadmill.getId(),
-                MachineHistoryDao.builder()
+                MachineHistoryDto.builder()
                         .maxWeight(4)
                         .workoutDate(nextDayWorkoutDate)
                         .numberSets(5)
@@ -60,7 +60,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
         );
 
         var actualBenchWorkoutHistory = createMachineHistory(bob.getId(), bench.getId(),
-                MachineHistoryDao.builder()
+                MachineHistoryDto.builder()
                         .maxWeight(7)
                         .workoutDate(workoutDate)
                         .numberSets(8)
@@ -70,7 +70,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
         );
 
         createMachineHistory(bob.getId(), bench.getId(),
-                MachineHistoryDao.builder()
+                MachineHistoryDto.builder()
                         .maxWeight(7)
                         .workoutDate(workoutDate.plusYears(1))
                         .numberSets(8)

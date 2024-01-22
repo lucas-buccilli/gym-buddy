@@ -1,8 +1,8 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.models.Period;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineProgressDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class ReportMachineProgressServiceTest {
     private ReportMachineProgressService reportMachineProgressService;
 
     @Mock
-    IMachineHistoryDataProvider machineHistoryDataProvider;
+    IMachineHistoryDao machineHistoryDataProvider;
 
     @Mock
     ModelMapper modelMapper;
@@ -41,8 +41,8 @@ class ReportMachineProgressServiceTest {
         var machineId = 1;
         var memberId = 1;
 
-        Map<String, List<MachineHistoryDao>> machineProgressMap = new HashMap<>();
-        var machineHistoryDao = new MachineHistoryDao();
+        Map<String, List<MachineHistoryDto>> machineProgressMap = new HashMap<>();
+        var machineHistoryDao = new MachineHistoryDto();
         machineProgressMap.put("MachineName", List.of(machineHistoryDao));
         var dao = modelMapper.map(machineHistoryDao, MachineProgressDto.class);
 

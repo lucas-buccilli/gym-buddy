@@ -1,4 +1,4 @@
-package com.example.gymbuddy.infrastructure.models.daos;
+package com.example.gymbuddy.infrastructure.models.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineDao implements Dao {
+public class MachineDto {
 
     private Integer id;
 

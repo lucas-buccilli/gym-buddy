@@ -5,9 +5,5 @@ CREATE TABLE machine_history (
     number_sets int NOT NULL,
     workout_date date NOT NULL,
     member_id int NOT NULL,
-        FOREIGN KEY (member_id)
-            REFERENCES member(id),
-    machine_id int NOT NULL,
-        FOREIGN KEY (machine_id)
-            REFERENCES machine(id)
+    machine_id int NOT NULL
 )

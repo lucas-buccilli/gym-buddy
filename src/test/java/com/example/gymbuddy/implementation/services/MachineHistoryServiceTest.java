@@ -1,7 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
+import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,12 +23,12 @@ class MachineHistoryServiceTest {
     private MachineHistoryService machineHistoryService;
 
     @Mock
-    private IMachineHistoryDataProvider machineHistoryDataProvider;
+    private IMachineHistoryDao machineHistoryDataProvider;
 
 
     @Test
     void findAll() {
-        List<MachineHistoryDao> machineHistoryDaos = List.of(new MachineHistoryDao());
+        List<MachineHistoryDto> machineHistoryDaos = List.of(new MachineHistoryDto());
         when(machineHistoryDataProvider.findAll()).thenReturn(machineHistoryDaos);
         var results = machineHistoryService.findAll();
         assertEquals(machineHistoryDaos, results);
@@ -39,7 +39,7 @@ class MachineHistoryServiceTest {
     void addMachineHistory() {
         var memberId = 1;
         var machineId = 1;
-        var machineHistoryDto = MachineHistoryDao.builder().memberId(memberId).machineId(machineId).build();
+        var machineHistoryDto = MachineHistoryDto.builder().memberId(memberId).machineId(machineId).build();
         when(machineHistoryDataProvider.addMachineHistory
             (anyInt(), anyInt(), any())).thenReturn(machineHistoryDto);
         var result = machineHistoryService.addMachineHistory(memberId, machineId, machineHistoryDto);
@@ -52,7 +52,7 @@ class MachineHistoryServiceTest {
     void findByMachineIdAndMemberId() {
         var memberId = 1;
         var machineId = 1;
-        var machineHistoryDto = MachineHistoryDao.builder().memberId(memberId).machineId(machineId).build();
+        var machineHistoryDto = MachineHistoryDto.builder().memberId(memberId).machineId(machineId).build();
         var machineHistoryDtos = List.of(machineHistoryDto);
         when(machineHistoryDataProvider.findBy(anyInt(), anyInt(), any())).thenReturn(machineHistoryDtos);
         var result = machineHistoryService.findBy(memberId, machineId, null);
@@ -66,7 +66,7 @@ class MachineHistoryServiceTest {
     void findLatestWorkout() {
         var memberId = 1;
         var machineId = 1;
-        var machineHistoryDto = MachineHistoryDao.builder().memberId(memberId).machineId(machineId).build();
+        var machineHistoryDto = MachineHistoryDto.builder().memberId(memberId).machineId(machineId).build();
         var machineHistoryDtoOptional = Optional.of(machineHistoryDto);
         when(machineHistoryDataProvider.findLatestWorkout(anyInt(), anyInt()))
                 .thenReturn(machineHistoryDtoOptional);

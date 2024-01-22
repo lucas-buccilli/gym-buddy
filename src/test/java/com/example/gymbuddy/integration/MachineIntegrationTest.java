@@ -1,19 +1,8 @@
 package com.example.gymbuddy.integration;
 
 
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
-import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Container;
-
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,7 +15,7 @@ public class MachineIntegrationTest extends IntegrationBase {
     void shouldOperateOnMachines() throws Exception {
 
         var treadmill = createMachine(
-                MachineDao.builder()
+                MachineDto.builder()
                         .name("Treadmill")
                         .build()
         );

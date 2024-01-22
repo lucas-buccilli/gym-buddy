@@ -1,10 +1,10 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.database.specificationBuilders.MachineHistorySpecificationBuilder;
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
-import com.example.gymbuddy.infrastructure.dataproviders.IMachineHistoryDataProvider;
+import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
@@ -20,27 +20,27 @@ import static java.util.stream.Collectors.toSet;
 
 @Service
 @RequiredArgsConstructor
-public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
+public class MachineHistoryDao implements IMachineHistoryDao {
     private final MachineHistoryRepository machineHistoryRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public List<MachineHistoryDao> findAll() {
+    public List<MachineHistoryDto> findAll() {
         return machineHistoryRepository.findAll().stream()
-                .map(machineHistoryEntity -> modelMapper.map(machineHistoryEntity, MachineHistoryDao.class))
+                .map(machineHistoryEntity -> modelMapper.map(machineHistoryEntity, MachineHistoryDto.class))
                 .toList();
     }
 
     @Override
-    public MachineHistoryDao addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDao machineHistoryDao) {
+    public MachineHistoryDto addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDto machineHistoryDao) {
         machineHistoryDao.setMachineId(machineId);
         machineHistoryDao.setMemberId(memberId);
         var machineHistory = modelMapper.map(machineHistoryDao, MachineHistory.class);
-        return modelMapper.map(machineHistoryRepository.save(machineHistory), MachineHistoryDao.class);
+        return modelMapper.map(machineHistoryRepository.save(machineHistory), MachineHistoryDto.class);
     }
 
     @Override
-    public List<MachineHistoryDao> findBy(Integer memberId, Integer machineId, @Nullable LocalDateTime workoutDate) {
+    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, @Nullable LocalDateTime workoutDate) {
         MachineHistorySpecificationBuilder builder = MachineHistorySpecificationBuilder.builder()
                 .hasMachineId(machineId)
                 .hasMemberId(memberId);
@@ -49,14 +49,14 @@ public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
         }
         var histories = machineHistoryRepository.findAll(builder.build());
         return histories.stream()
-                .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDao.class))
+                .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class))
                 .toList();
     }
 
     @Override
-    public Optional<MachineHistoryDao> findLatestWorkout(Integer memberId, Integer machineId) {
+    public Optional<MachineHistoryDto> findLatestWorkout(Integer memberId, Integer machineId) {
         return machineHistoryRepository.findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(memberId, machineId)
-                .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDao.class));
+                .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
                 );
     }
 
-    public Map<String, List<MachineHistoryDao>> getMachineProgress(LocalDateTime startDate, LocalDateTime endDate, Integer memberId, Integer machineId) {
+    public Map<String, List<MachineHistoryDto>> getMachineProgress(LocalDateTime startDate, LocalDateTime endDate, Integer memberId, Integer machineId) {
 
         return machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
                         .hasMemberId(memberId)
@@ -89,7 +89,7 @@ public class MachineHistoryDataProvider implements IMachineHistoryDataProvider {
         ).stream()
                 .collect(Collectors.groupingBy(
                         machineHistory -> machineHistory.getMachine().getName(),
-                        Collectors.mapping(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDao.class), Collectors.toList())
+                        Collectors.mapping(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class), Collectors.toList())
                         )
                 );
     }

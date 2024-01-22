@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.daos.MachineDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class MachineControllerTest {
 
     @Test
     public void shouldReturnAllMachines() throws Exception {
-        var machine = MachineDao.builder().name("name123").build();
+        var machine = MachineDto.builder().name("name123").build();
         when(machineService.findAll()).thenReturn(List.of(machine));
 
         mockMvc.perform(get("/machines"))
@@ -44,7 +44,7 @@ class MachineControllerTest {
 
     @Test
     public void shouldAddMachine() throws Exception {
-        var machineDto = MachineDao.builder().name("name").build();
+        var machineDto = MachineDto.builder().name("name").build();
         when(machineService.addMachine(any())).thenReturn(machineDto);
         mockMvc.perform(
                         post("/machines")

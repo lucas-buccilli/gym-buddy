@@ -1,4 +1,4 @@
-package com.example.gymbuddy.infrastructure.models.daos;
+package com.example.gymbuddy.infrastructure.models.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jdk.jfr.BooleanFlag;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MembershipDao {
+public class MembershipDto {
     private Integer id;
 
     @NotNull

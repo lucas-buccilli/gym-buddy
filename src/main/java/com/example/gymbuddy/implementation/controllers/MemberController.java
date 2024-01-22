@@ -1,9 +1,13 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.infrastructure.models.daos.MemberDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +19,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
     private final IMemberService memberService;
+    private final ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<List<MemberDao>> findAll() {
+    public ResponseEntity<List<MemberDto>> findAll() {
         return ResponseEntity.ok(memberService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<MemberDao> addMember(@Valid @RequestBody MemberDao memberDao) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(memberDao));
+    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
+        var dao = modelMapper.map(replaceOrAddRequest, MemberDto.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dao));
     }
 
     @DeleteMapping(path = "/{id}")
@@ -31,4 +37,26 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<MemberDto> editMember(@PathVariable int id,
+                                                @Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
+        var dao = modelMapper.map(replaceOrAddRequest, MemberDto.class);
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.replaceMember(id, dao));
+    }
+
+    public record ReplaceOrAddRequest(
+            @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
+            @NotNull
+            String firstName,
+
+            @Size(max = 50, message = "The length of last name must be between less than 50 characters.")
+            @NotNull
+            String lastName,
+
+            @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
+            @NotNull
+            String phoneNumber
+        ) {}
+
 }

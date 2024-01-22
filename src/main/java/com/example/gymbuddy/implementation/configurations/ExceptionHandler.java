@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-@Slf4j
 public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(InvalidRequestException.class)
@@ -58,7 +57,6 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(MachineNotFoundException.class)
     public ResponseEntity<?> machineNotFoundExceptionHandler(MachineNotFoundException e, HttpServletRequest request) {
-        log.error(e.name);
         return new ResponseEntity<>(
                 new ExceptionResponse(
                         HttpStatus.NOT_FOUND,
@@ -66,7 +64,7 @@ public class ExceptionHandler {
                         e.getMessage(),
                         request
                 ),
-                HttpStatus.BAD_REQUEST);
+                HttpStatus.NOT_FOUND);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(MemberNotFoundException.class)
@@ -78,7 +76,7 @@ public class ExceptionHandler {
                         e.getMessage(),
                         request
                 ),
-                HttpStatus.BAD_REQUEST);
+                HttpStatus.NOT_FOUND);
     }
 
     @Data

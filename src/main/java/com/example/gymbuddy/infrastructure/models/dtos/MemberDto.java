@@ -1,4 +1,4 @@
-package com.example.gymbuddy.infrastructure.models.daos;
+package com.example.gymbuddy.infrastructure.models.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDao {
+public class MemberDto {
     private Integer id;
 
     @Size(max = 50, message = "The length of first name must be between less than 50 characters.")

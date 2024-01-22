@@ -1,10 +1,10 @@
-package com.example.gymbuddy.implementation.dataproviders;
+package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
 import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
-import com.example.gymbuddy.infrastructure.models.daos.MachineHistoryDao;
+import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.integration.EntityGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,20 +32,20 @@ import static org.mockito.Mockito.when;
 public class MachineHistoryDataProviderTest {
 
     @InjectMocks
-    private MachineHistoryDataProvider machineHistoryDataProvider;
+    private MachineHistoryDao machineHistoryDataProvider;
     @Mock
     private MachineHistoryRepository machineHistoryRepository;
     @Spy
     private ModelMapper modelMapper;
     @Test
     void findAll() {
-        var machineHistoryDtoList = List.of(MachineHistoryDao.builder().build());
+        var machineHistoryDtoList = List.of(MachineHistoryDto.builder().build());
         var machineHistoryList = List.of(new MachineHistory());
 
         when(machineHistoryRepository.findAll()).thenReturn(machineHistoryList);
         assertEquals(machineHistoryDtoList, machineHistoryDataProvider.findAll());
         verify(machineHistoryRepository).findAll();
-        verify(modelMapper).map(eq(machineHistoryList.get(0)), eq(MachineHistoryDao.class));
+        verify(modelMapper).map(eq(machineHistoryList.get(0)), eq(MachineHistoryDto.class));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class MachineHistoryDataProviderTest {
         var machineHistory = new MachineHistory();
 
         when(machineHistoryRepository.save(any())).thenReturn(machineHistory);
-        assertNotNull(machineHistoryDataProvider.addMachineHistory(null, null,  MachineHistoryDao.builder().build()));
+        assertNotNull(machineHistoryDataProvider.addMachineHistory(null, null,  MachineHistoryDto.builder().build()));
         verify(machineHistoryRepository).save(machineHistory);
     }
 
@@ -77,7 +77,7 @@ public class MachineHistoryDataProviderTest {
         assertEquals(machineHistory.getMachine().getId(), results.get(0).getMachineId());
         assertEquals(machineHistory.getWorkoutDate(), results.get(0).getWorkoutDate());
         verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any());
-        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDao.class));
+        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDto.class));
     }
 
     @Test
@@ -100,20 +100,20 @@ public class MachineHistoryDataProviderTest {
         assertEquals(machineHistory.getMachine().getId(), results.get(0).getMachineId());
         assertEquals(machineHistory.getWorkoutDate(), results.get(0).getWorkoutDate());
         verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any());
-        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDao.class));
+        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDto.class));
     }
 
     @Test
     void findLatestWorkout() {
         var latestMachineHistory = Optional.of(new MachineHistory());
-        var machineHistoryDtoOptional = Optional.of(new MachineHistoryDao());
+        var machineHistoryDtoOptional = Optional.of(new MachineHistoryDto());
 
         when(machineHistoryRepository.findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(isNull(), isNull()))
                 .thenReturn(latestMachineHistory);
 
         assertEquals(machineHistoryDtoOptional, machineHistoryDataProvider.findLatestWorkout(null, null));
         verify(machineHistoryRepository).findTop1ByMemberIdAndMachineIdOrderByWorkoutDateDesc(isNull(), isNull());
-        verify(modelMapper).map(eq(latestMachineHistory.get()), eq(MachineHistoryDao.class));
+        verify(modelMapper).map(eq(latestMachineHistory.get()), eq(MachineHistoryDto.class));
     }
 
     @Test
