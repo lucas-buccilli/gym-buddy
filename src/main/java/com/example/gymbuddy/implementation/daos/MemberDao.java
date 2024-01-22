@@ -41,6 +41,12 @@ public class MemberDao implements IMemberDao {
     }
 
     @Override
+    public MemberDto modifyMember(int id, MemberDto memberDto) {
+        var modifyedMember = memberRepository.save(modelMapper.map(memberDto, Member.class));
+        return modelMapper.map(modifyedMember, MemberDto.class);
+    }
+
+    @Override
     public MemberDto editMember(MemberDto memberDao) {
         return modelMapper.map(memberRepository.save(modelMapper.map(memberDao, Member.class)), MemberDto.class);
     }

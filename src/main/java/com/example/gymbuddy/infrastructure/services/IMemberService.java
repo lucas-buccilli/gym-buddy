@@ -12,4 +12,6 @@ public interface IMemberService {
     void deleteMember(int id);
 
     MemberDto replaceMember(int id, MemberDto memberDao);
+
+    MemberDto modifyMember(int id, MemberDto partialMemberDao) throws IllegalAccessException;
 }

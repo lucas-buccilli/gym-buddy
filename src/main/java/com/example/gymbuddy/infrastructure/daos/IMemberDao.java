@@ -14,5 +14,7 @@ public interface IMemberDao {
 
     void deleteMember(int id);
 
+    MemberDto modifyMember(int id, MemberDto memberDto);
+
     MemberDto editMember(MemberDto memberDao);
 }

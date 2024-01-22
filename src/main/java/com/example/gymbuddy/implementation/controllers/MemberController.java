@@ -38,6 +38,14 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<?> modifyMember(@PathVariable int id,
+                                                  @RequestBody MemberDto partialMemberDto) throws IllegalAccessException {
+
+        var modifiedMember = memberService.modifyMember(id, partialMemberDto);
+        return ResponseEntity.status(HttpStatus.OK).body(modifiedMember);
+    }
+
     @PutMapping(path = "/{id}")
     public ResponseEntity<MemberDto> editMember(@PathVariable int id,
                                                 @Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
