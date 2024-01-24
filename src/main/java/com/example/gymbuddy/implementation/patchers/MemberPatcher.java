@@ -1,22 +1,26 @@
 package com.example.gymbuddy.implementation.patchers;
 
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 
-@Component
 public class MemberPatcher {
-    public static void patchMember(MemberDto existingMemberDao, MemberDto partialMemberDao) throws IllegalAccessException {
+    private MemberPatcher() {}
+    public static MemberDto patchMember(MemberDto existingMemberDto, MemberDto partialMemberDto) throws IllegalAccessException {
         Class<?> memberDtoClass = MemberDto.class;
         Field[] memberFields = memberDtoClass.getDeclaredFields();
         for (Field field : memberFields) {
             field.setAccessible(true);
-            Object value = field.get(partialMemberDao);
+            Object value = field.get(partialMemberDto);
             if (value != null) {
-               field.set(existingMemberDao, value);
+               field.set(existingMemberDto, value);
             }
             field.setAccessible(false);
         }
+        return existingMemberDto;
     }
 }

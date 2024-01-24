@@ -5,7 +5,6 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -121,7 +120,7 @@ public abstract class IntegrationBase {
     }
 
 
-    public MemberDto editMember(int id, MemberDto memberDao) throws Exception {
+    public MemberDto replaceMember(int id, MemberDto memberDao) throws Exception {
         var result = mvc.perform(put("/members/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(memberDao)))
@@ -130,10 +129,12 @@ public abstract class IntegrationBase {
         return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
     }
 
-    public void modifyMember(int id, MemberDto memberDto) throws Exception {
-        mvc.perform(patch("/members/" + id, memberDto)
+    public MemberDto modifyMember(int id, MemberDto memberDto) throws Exception {
+        var result = mvc.perform(patch("/members/" + id, memberDto)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(memberDto)))
                 .andReturn();
+
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
     }
 }

@@ -8,13 +8,9 @@ import java.util.Optional;
 public interface IMemberDao {
     List<MemberDto> findAll();
 
-    MemberDto addMember(MemberDto memberDao);
+    MemberDto saveMember(MemberDto memberDao);
 
     Optional<MemberDto> findById(Integer memberId);
 
     void deleteMember(int id);
-
-    MemberDto modifyMember(int id, MemberDto memberDto);
-
-    MemberDto editMember(MemberDto memberDao);
 }

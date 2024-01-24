@@ -22,7 +22,7 @@ public class MemberService implements IMemberService {
 
     @Override
     public MemberDto addMember(MemberDto memberDao) {
-        return memberDataProvider.addMember(memberDao);
+        return memberDataProvider.saveMember(memberDao);
     }
 
     @Override
@@ -33,13 +33,13 @@ public class MemberService implements IMemberService {
     @Override
     public MemberDto modifyMember(int id, MemberDto partialMemberDto) throws IllegalAccessException {
         MemberDto memberDto = memberDataProvider.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
-        MemberPatcher.patchMember(memberDto, partialMemberDto);
-        return memberDataProvider.modifyMember(id, memberDto);
+        var updatedMemberDto = MemberPatcher.patchMember(memberDto, partialMemberDto);
+        return memberDataProvider.saveMember(updatedMemberDto);
     }
 
     @Override
     public MemberDto replaceMember(int id, MemberDto memberDao) {
         memberDao.setId(memberDataProvider.findById(id).orElseThrow(() -> new MemberNotFoundException(id)).getId());
-        return memberDataProvider.editMember(memberDao);
+        return memberDataProvider.saveMember(memberDao);
     }
 }
