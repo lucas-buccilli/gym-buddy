@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.services;
 
+import com.example.gymbuddy.implementation.patchers.MemberPatcher;
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
@@ -21,7 +22,7 @@ public class MemberService implements IMemberService {
 
     @Override
     public MemberDto addMember(MemberDto memberDao) {
-        return memberDataProvider.addMember(memberDao);
+        return memberDataProvider.saveMember(memberDao);
     }
 
     @Override
@@ -30,8 +31,15 @@ public class MemberService implements IMemberService {
     }
 
     @Override
+    public MemberDto modifyMember(int id, MemberDto partialMemberDto) throws IllegalAccessException {
+        MemberDto memberDto = memberDataProvider.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
+        var updatedMemberDto = MemberPatcher.patchMember(memberDto, partialMemberDto);
+        return memberDataProvider.saveMember(updatedMemberDto);
+    }
+
+    @Override
     public MemberDto replaceMember(int id, MemberDto memberDao) {
         memberDao.setId(memberDataProvider.findById(id).orElseThrow(() -> new MemberNotFoundException(id)).getId());
-        return memberDataProvider.editMember(memberDao);
+        return memberDataProvider.saveMember(memberDao);
     }
 }

@@ -38,6 +38,13 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<?> modifyMember(@PathVariable int id,
+                                          @Valid @RequestBody UpdateRequest updateRequest) throws IllegalAccessException {
+        var modifiedMember = memberService.modifyMember(id, modelMapper.map(updateRequest, MemberDto.class));
+        return ResponseEntity.status(HttpStatus.OK).body(modifiedMember);
+    }
+
     @PutMapping(path = "/{id}")
     public ResponseEntity<MemberDto> editMember(@PathVariable int id,
                                                 @Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
@@ -58,5 +65,16 @@ public class MemberController {
             @NotNull
             String phoneNumber
         ) {}
+
+    public record UpdateRequest(
+            @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
+            String firstName,
+
+            @Size(max = 50, message = "The length of last name must be between less than 50 characters.")
+            String lastName,
+
+            @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
+            String phoneNumber
+    ) {}
 
 }

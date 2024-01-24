@@ -1,5 +1,6 @@
 package com.example.gymbuddy.integration;
 
+import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,16 +14,23 @@ public class MemberIntegrationTest extends IntegrationBase{
     }
 
     @Test
-    public void shouldEditExistingMember() throws Exception {
+    public void shouldReplaceExistingMember() throws Exception {
         var member = createMember();
-        var newMemberInfo = createMember();
-        var editedMember = editMember(member.getId(), newMemberInfo);
+        member.setFirstName("New Name");
+        var editedMember = replaceMember(member.getId(),member);
         assertEquals(member.getId(), editedMember.getId());
-        assertEquals(newMemberInfo.getFirstName(), editedMember.getFirstName());
-        assertEquals(newMemberInfo.getLastName(), editedMember.getLastName());
-        assertEquals(newMemberInfo.getPhoneNumber(), editedMember.getPhoneNumber());
-        assertNotEquals(member.getFirstName(), editedMember.getPhoneNumber());
+        assertEquals(member.getFirstName(), editedMember.getFirstName());
     }
 
+    @Test
+    public void shouldModifyExistingMember() throws Exception {
+        var member = createMember();
+        var newMemberInfo = MemberDto.builder().firstName("New Name 2").build();
+        var editedMember = modifyMember(member.getId(), newMemberInfo);
+        assertEquals(member.getId(), editedMember.getId());
+        assertEquals(newMemberInfo.getFirstName(), editedMember.getFirstName());
+        assertEquals(member.getLastName(), editedMember.getLastName());
+        assertEquals(member.getPhoneNumber(), editedMember.getPhoneNumber());
+    }
 }
 

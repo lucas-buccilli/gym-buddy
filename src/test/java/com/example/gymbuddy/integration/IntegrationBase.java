@@ -120,10 +120,19 @@ public abstract class IntegrationBase {
     }
 
 
-    public MemberDto editMember(int id, MemberDto memberDao) throws Exception {
+    public MemberDto replaceMember(int id, MemberDto memberDao) throws Exception {
         var result = mvc.perform(put("/members/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(memberDao)))
+                .andReturn();
+
+        return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
+    }
+
+    public MemberDto modifyMember(int id, MemberDto memberDto) throws Exception {
+        var result = mvc.perform(patch("/members/" + id, memberDto)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(memberDto)))
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);

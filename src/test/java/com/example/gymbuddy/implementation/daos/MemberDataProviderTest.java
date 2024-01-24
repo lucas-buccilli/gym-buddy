@@ -46,7 +46,7 @@ public class MemberDataProviderTest {
         var member = new Member();
         member.setFirstName("John");
         when(memberRepository.save(any())).thenReturn(member);
-        assertNotNull(memberDataProvider.addMember(MemberDto.builder().firstName("John").build()));
+        assertNotNull(memberDataProvider.saveMember(MemberDto.builder().firstName("John").build()));
         verify(memberRepository).save(member);
     }
 
@@ -78,7 +78,7 @@ public class MemberDataProviderTest {
         var memberDao = modelMapper.map(member, MemberDto.class);
         when(memberRepository.save(any())).thenReturn(member);
 
-        var result = memberDataProvider.editMember(memberDao);
+        var result = memberDataProvider.saveMember(memberDao);
         verify(memberRepository).save(member);
 
         assertEquals(memberDao, result);

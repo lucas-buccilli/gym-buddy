@@ -25,7 +25,7 @@ public class MemberDao implements IMemberDao {
     }
 
     @Override
-    public MemberDto addMember(MemberDto memberDao) {
+    public MemberDto saveMember(MemberDto memberDao) {
         var member = modelMapper.map(memberDao, Member.class);
         return modelMapper.map(memberRepository.save(member), MemberDto.class);
     }
@@ -38,10 +38,5 @@ public class MemberDao implements IMemberDao {
     @Override
     public void deleteMember(int id) {
         memberRepository.deleteById(id);
-    }
-
-    @Override
-    public MemberDto editMember(MemberDto memberDao) {
-        return modelMapper.map(memberRepository.save(modelMapper.map(memberDao, Member.class)), MemberDto.class);
     }
 }
