@@ -10,4 +10,6 @@ public interface IMachineService {
     MachineDto addMachine(MachineDto machineDao);
 
     void deleteMachineByName(String name);
+
+    MachineDto replaceMachine(int id, MachineDto machineDto);
 }

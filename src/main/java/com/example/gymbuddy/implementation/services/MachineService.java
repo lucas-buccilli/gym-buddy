@@ -31,4 +31,10 @@ public class MachineService implements IMachineService {
     public void deleteMachineByName(String name) {
         machineDataProvider.deleteMachine(machineDataProvider.findByName(name).orElseThrow(() -> new MachineNotFoundException(name)).getId());
     }
+
+    @Override
+    public MachineDto replaceMachine(int id, MachineDto machineDto) {
+        machineDto.setId(machineDataProvider.findById(id).orElseThrow(() -> new MachineNotFoundException(id)).getId());
+        return machineDataProvider.addMachine(machineDto);
+    }
 }

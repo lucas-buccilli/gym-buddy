@@ -26,7 +26,7 @@ public class MachineHistoryController {
                                                               @PathVariable(name = "machine_id") int machineId,
                                                               @Nullable
                                                               @RequestParam(name = "workout_date", required=false) LocalDateTime workoutDate) {
-        return ResponseEntity.ok(machineHistoryService.findBy(machineId, memberId, workoutDate));
+        return ResponseEntity.ok(machineHistoryService.findBy(memberId, machineId, workoutDate));
     }
 
     @PostMapping
