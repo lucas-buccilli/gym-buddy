@@ -1,12 +1,15 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MachineController.class)
+@Import(ModelMapperConfig.class)
 class MachineControllerTest {
 
     @Autowired

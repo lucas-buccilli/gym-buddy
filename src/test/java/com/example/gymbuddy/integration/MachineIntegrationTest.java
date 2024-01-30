@@ -24,4 +24,18 @@ public class MachineIntegrationTest extends IntegrationBase {
 
     }
 
+    @Test
+    void shouldReplaceMachine() throws Exception {
+        var treadmill = createMachine(
+                MachineDto.builder()
+                        .name("Treadmill")
+                        .build()
+        );
+        treadmill.setName("Bench Press");
+
+        var replacedMachine = replaceMachine(treadmill.getId(), treadmill);
+        assertEquals(treadmill.getName(), replacedMachine.getName());
+        assertEquals(treadmill.getId(), replacedMachine.getId());
+    }
+
 }

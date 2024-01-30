@@ -80,4 +80,29 @@ class MachineServiceTest {
         var result = assertThrows(MachineNotFoundException.class, () -> machineService.deleteMachineByName(name));
         assertEquals("Machine Not Found: name = treadmill", result.getMessage());
     }
+
+    @Test
+    public void shouldEditMachine() {
+        var id = 33;
+        MachineDto machineDto = MachineDto.builder().id(id).name("Smith").build();
+        MachineDto newNameMachineDto = MachineDto.builder().name("Bench Press").build();
+
+
+        when(machineDataProvider.findById(anyInt())).thenReturn(Optional.of(machineDto));
+        when(machineDataProvider.addMachine(any())).thenReturn(newNameMachineDto);
+
+        var result = machineService.replaceMachine(id, newNameMachineDto);
+
+        verify(machineDataProvider).findById(id);
+        verify(machineDataProvider).addMachine(newNameMachineDto);
+
+        assertEquals(id, result.getId());
+        assertEquals(newNameMachineDto.getName(), result.getName());
+    }
+
+    @Test
+    public void shouldThrowErrorWhenReplaceMachineDoesntExist() {
+        var result = assertThrows(MachineNotFoundException.class, () -> machineService.replaceMachine(88, new MachineDto()));
+        assertEquals("Machine Not Found: id = 88", result.getMessage());
+    }
 }

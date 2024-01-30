@@ -3,7 +3,10 @@ package com.example.gymbuddy.implementation.controllers;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MachineController {
     private final IMachineService machineService;
+    private final ModelMapper modelMapper;
 
     @GetMapping
     public ResponseEntity<List<MachineDto>> findAll() {
@@ -22,8 +26,9 @@ public class MachineController {
     }
 
     @PostMapping
-    public ResponseEntity<MachineDto> addMachine(@Valid @RequestBody MachineDto machineDao) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(machineService.addMachine(machineDao));
+    public ResponseEntity<MachineDto> addMachine(@Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
+        var machineDto = modelMapper.map(replaceOrAddRequest, MachineDto.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(machineService.addMachine(machineDto));
     }
 
     @DeleteMapping
@@ -32,5 +37,17 @@ public class MachineController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<MachineDto> replaceMachine(@PathVariable int id,
+                                                     @Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
+        var machineDto = modelMapper.map(replaceOrAddRequest, MachineDto.class);
+        return ResponseEntity.status(HttpStatus.OK).body(machineService.replaceMachine(id, machineDto));
+    }
+
     public record DeleteRequest(String name) {} ;
+
+    public record ReplaceOrAddRequest(
+            @Size(max = 500, message = "The length of name must be between less than 500 characters.")
+            @NotNull
+            String name) {}
 }
