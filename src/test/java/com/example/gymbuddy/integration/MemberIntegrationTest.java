@@ -3,7 +3,7 @@ package com.example.gymbuddy.integration;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MemberIntegrationTest extends IntegrationBase{
 

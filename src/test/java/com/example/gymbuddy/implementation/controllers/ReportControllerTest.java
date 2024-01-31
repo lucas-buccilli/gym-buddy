@@ -3,7 +3,6 @@ package com.example.gymbuddy.implementation.controllers;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
 import com.example.gymbuddy.infrastructure.services.IReportService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
