@@ -22,4 +22,7 @@ public class Member {
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "auth_id")
+    private String authId;
 }

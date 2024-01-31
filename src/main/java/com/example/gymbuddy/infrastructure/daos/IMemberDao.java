@@ -12,5 +12,7 @@ public interface IMemberDao {
 
     Optional<MemberDto> findById(Integer memberId);
 
+    Optional<MemberDto> findByAuthId(String authId);
+
     void deleteMember(int id);
 }

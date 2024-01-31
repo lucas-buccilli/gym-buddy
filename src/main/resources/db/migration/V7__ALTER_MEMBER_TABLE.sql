@@ -1,0 +1,1 @@
+ALTER TABLE member add column auth_id varchar(50) NOT NULL

@@ -36,6 +36,11 @@ public class MemberDao implements IMemberDao {
     }
 
     @Override
+    public Optional<MemberDto> findByAuthId(String authId) {
+        return memberRepository.findByAuthId(authId).map(member -> modelMapper.map(member, MemberDto.class));
+    }
+
+    @Override
     public void deleteMember(int id) {
         memberRepository.deleteById(id);
     }

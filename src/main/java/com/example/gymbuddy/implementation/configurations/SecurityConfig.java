@@ -2,11 +2,27 @@ package com.example.gymbuddy.implementation.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.access.expression.SecurityExpressionRoot;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableMethodSecurity
@@ -29,12 +45,57 @@ public class SecurityConfig {
                 .build();
     }
 
+    @Bean
+    static MethodSecurityExpressionHandler expressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(new CustomPermissionEvaluator());
+        return expressionHandler;
+    }
+
+    private static class CustomPermissionEvaluator implements PermissionEvaluator {
+
+        @Override
+        public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+            Set<String> roleSet = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+            return roleSet.contains("PERMISSION_" + permission + ":" + targetDomainObject);
+        }
+
+        @Override
+        public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("permissions");
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new JwtGrantedAuthoritiesConverter());
         return jwtAuthenticationConverter;
+    }
+
+    private static class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+        @Override
+        public Collection<GrantedAuthority> convert(Jwt source) {
+            var permissions = source.getClaim("permissions");
+            var roles = source.getClaim("https://gym-buddy.com/roles");
+            var grantedAuthorities = new ArrayList<GrantedAuthority>();
+
+            if (roles instanceof Collection<?>) {
+                grantedAuthorities.addAll(((Collection<?>) roles).stream()
+                                .filter(String.class::isInstance)
+                                .map(String.class::cast)
+                                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toSet()));
+            }
+
+            if (permissions instanceof Collection<?>) {
+                grantedAuthorities.addAll(((Collection<?>) permissions).stream()
+                                .filter(String.class::isInstance)
+                                .map(String.class::cast)
+                                .map(permission -> new SimpleGrantedAuthority("PERMISSION_" + permission))
+                        .collect(Collectors.toSet()));
+            }
+
+            return grantedAuthorities;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.services.UserAuthService;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import jakarta.validation.Valid;
@@ -28,41 +29,64 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
     private final IMemberService memberService;
+    private final UserAuthService userAuthService;
     private final ModelMapper modelMapper;
 
-    @PreAuthorize("hasAuthority('read:members')")
+    @PreAuthorize("hasRole('Admin')")
     @GetMapping
     public ResponseEntity<List<MemberDto>> findAll() {
         return ResponseEntity.ok(memberService.findAll());
     }
 
+
+    @PreAuthorize("hasPermission('members', 'create') or hasRole('Admin')")
     @PostMapping
-    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
-        var dao = modelMapper.map(replaceOrAddRequest, MemberDto.class);
+    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody AddRequest addRequest) {
+        var dao = modelMapper.map(addRequest, MemberDto.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dao));
     }
 
+    @PreAuthorize("hasPermission('members', 'delete') or hasRole('Admin')")
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteMember(@PathVariable int id) {
+        userAuthService.verifyAuthenticatedUserCanAccessUser(id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasPermission('members', 'modify') or hasRole('Admin')")
     @PatchMapping(path = "/{id}")
     public ResponseEntity<?> modifyMember(@PathVariable int id,
                                           @Valid @RequestBody UpdateRequest updateRequest) throws IllegalAccessException {
+        userAuthService.verifyAuthenticatedUserCanAccessUser(id);
         var modifiedMember = memberService.modifyMember(id, modelMapper.map(updateRequest, MemberDto.class));
         return ResponseEntity.status(HttpStatus.OK).body(modifiedMember);
     }
 
+    @PreAuthorize("hasPermission('members', 'modify') or hasRole('Admin')")
     @PutMapping(path = "/{id}")
     public ResponseEntity<MemberDto> editMember(@PathVariable int id,
-                                                @Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
-        var dto = modelMapper.map(replaceOrAddRequest, MemberDto.class);
+                                                @Valid @RequestBody ReplaceRequest replaceRequest) {
+        userAuthService.verifyAuthenticatedUserCanAccessUser(id);
+        var dto = modelMapper.map(replaceRequest, MemberDto.class);
         return ResponseEntity.status(HttpStatus.OK).body(memberService.replaceMember(id, dto));
     }
 
-    public record ReplaceOrAddRequest(
+    public record AddRequest(
+            @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
+            @NotNull
+            String firstName,
+            @Size(max = 50, message = "The length of last name must be between less than 50 characters.")
+            @NotNull
+            String lastName,
+            @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
+            @NotNull
+            String phoneNumber,
+            @NotNull
+            String authId
+        ) {}
+
+    public record ReplaceRequest(
             @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
             @NotNull
             String firstName,
