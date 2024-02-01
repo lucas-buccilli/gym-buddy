@@ -1,5 +1,6 @@
 package com.example.gymbuddy.infrastructure.models.dtos;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,6 @@ public class MemberDto {
     private String lastName;
 
     private String phoneNumber;
-
+    
     private String authId;
 }

@@ -8,3 +8,7 @@ spring:
     user: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     schemas: ${DB_NAME}
+okta:
+  oauth2:
+    issuer: https://test/
+    audience: https://test

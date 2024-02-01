@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.utils.AuthUtils;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
 import com.example.gymbuddy.infrastructure.services.IReportService;
@@ -39,6 +40,7 @@ class ReportControllerTest {
         when(reportService.getAdminReport(any(), any())).thenReturn(adminReportDto);
 
         mockMvc.perform(get("/reports/admin")
+                        .with(AuthUtils.generateAuth0Admin("1"))
                         .param("startDate", LocalDateTime.now().minusDays(1).toString())
                         .param("endDate", LocalDateTime.now().toString()))
                 .andDo(print())
@@ -55,6 +57,7 @@ class ReportControllerTest {
         when(reportService.getUserReport(any(), any(), anyInt(), anyInt())).thenReturn(userReportDto);
 
         mockMvc.perform(get("/reports/user")
+                        .with(AuthUtils.generateAuth0Admin("1"))
                 .param("startDate", LocalDateTime.MIN.toString())
                 .param("endDate", LocalDateTime.MAX.toString())
                 .param("memberId", Integer.toString(memberId))

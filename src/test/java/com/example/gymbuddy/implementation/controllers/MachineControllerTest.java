@@ -1,6 +1,8 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.utils.AuthUtils;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
+import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MachineController.class)
-@Import(ModelMapperConfig.class)
+@Import({ModelMapperConfig.class, SecurityConfig.class})
 class MachineControllerTest {
 
     @Autowired
@@ -41,7 +45,8 @@ class MachineControllerTest {
         var machine = MachineDto.builder().name("name123").build();
         when(machineService.findAll()).thenReturn(List.of(machine));
 
-        mockMvc.perform(get("/machines"))
+        mockMvc.perform(get("/machines")
+                .with(AuthUtils.generateAuth0Admin("1")))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(machine.getName()));
@@ -53,6 +58,7 @@ class MachineControllerTest {
         when(machineService.addMachine(any())).thenReturn(machineDto);
         mockMvc.perform(
                         post("/machines")
+                                .with(AuthUtils.generateAuth0Admin("1"))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(machineDto)))
                                 .andDo(print())

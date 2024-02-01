@@ -4,11 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -52,6 +50,9 @@ public class SecurityConfig {
         return expressionHandler;
     }
 
+    /**
+     * Custom permission evaluator so we can use @PreAuthorize("hasPermission('members', 'delete')")
+     */
     private static class CustomPermissionEvaluator implements PermissionEvaluator {
 
         @Override
@@ -72,6 +73,10 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
+    /**
+     * We are storing both roles and permissions as a granted authority.
+     * Roles are prefixed with ROLE_, while permissions are prefixed with PERMISSION_
+     */
     private static class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
         @Override
         public Collection<GrantedAuthority> convert(Jwt source) {

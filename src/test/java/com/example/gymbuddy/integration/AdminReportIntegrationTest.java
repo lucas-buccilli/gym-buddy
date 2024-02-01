@@ -24,28 +24,30 @@ public class AdminReportIntegrationTest extends IntegrationBase {
                 MachineDto
                         .builder()
                         .name("bench")
-                        .build()
+                        .build(),
+                Admin
         );
         var treadmill = createMachine(
                 MachineDto
                         .builder()
                         .name("treadmill")
-                        .build()
+                        .build(),
+                Admin
         );
 
-        List<MemberDto> list = IntStream.range(0, 9).mapToObj(intValue -> createMember()).toList();
+        List<MemberDto> list = IntStream.range(0, 9).mapToObj(intValue -> createMember(Admin)).toList();
 
         HashMap<Integer, List<MachineHistoryDto>> machineHistoriesMap = new HashMap<>();
         list.forEach(member -> {
             IntStream.range(0, 3)
-                    .mapToObj(intValue -> createMachineHistory(member.getId(), bench.getId()))
+                    .mapToObj(intValue -> createMachineHistory(member.getId(), bench.getId(), Admin))
                     .forEach(machineHistory ->
                             machineHistoriesMap.computeIfAbsent(member.getId(), k -> new ArrayList<MachineHistoryDto>())
                             .add(machineHistory)
                     );
         });
 
-        var adminReport = getAdminReport(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+        var adminReport = getAdminReport(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1), Admin);
         assertEquals(9, adminReport.getNumberOfVisitors());
         assertEquals(1, adminReport.getMachineUsage().size());
         assertEquals(27, adminReport.getMachineUsage().get(bench.getName()));
@@ -53,7 +55,7 @@ public class AdminReportIntegrationTest extends IntegrationBase {
         assertTrue(adminReport.getMachineUsage().containsKey(bench.getName()));
         assertFalse(adminReport.getMachineUsage().containsKey(treadmill.getName()));
 
-        var zeroActiveUsersAdminReport = getAdminReport(LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1));
+        var zeroActiveUsersAdminReport = getAdminReport(LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1), Admin);
         assertEquals(0, zeroActiveUsersAdminReport.getNumberOfVisitors());
     }
 }

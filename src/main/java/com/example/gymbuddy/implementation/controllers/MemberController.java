@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
-import com.example.gymbuddy.implementation.services.UserAuthService;
+import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import jakarta.validation.Valid;
@@ -29,7 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
     private final IMemberService memberService;
-    private final UserAuthService userAuthService;
     private final ModelMapper modelMapper;
 
     @PreAuthorize("hasRole('Admin')")
@@ -49,16 +48,15 @@ public class MemberController {
     @PreAuthorize("hasPermission('members', 'delete') or hasRole('Admin')")
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteMember(@PathVariable int id) {
-        userAuthService.verifyAuthenticatedUserCanAccessUser(id);
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasPermission('members', 'modify') or hasRole('Admin')")
+    @EnforceRls(memberIdParameterName = "id")
     @PatchMapping(path = "/{id}")
     public ResponseEntity<?> modifyMember(@PathVariable int id,
                                           @Valid @RequestBody UpdateRequest updateRequest) throws IllegalAccessException {
-        userAuthService.verifyAuthenticatedUserCanAccessUser(id);
         var modifiedMember = memberService.modifyMember(id, modelMapper.map(updateRequest, MemberDto.class));
         return ResponseEntity.status(HttpStatus.OK).body(modifiedMember);
     }
@@ -67,7 +65,6 @@ public class MemberController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<MemberDto> editMember(@PathVariable int id,
                                                 @Valid @RequestBody ReplaceRequest replaceRequest) {
-        userAuthService.verifyAuthenticatedUserCanAccessUser(id);
         var dto = modelMapper.map(replaceRequest, MemberDto.class);
         return ResponseEntity.status(HttpStatus.OK).body(memberService.replaceMember(id, dto));
     }
@@ -106,5 +103,4 @@ public class MemberController {
             @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
             String phoneNumber
     ) {}
-
 }

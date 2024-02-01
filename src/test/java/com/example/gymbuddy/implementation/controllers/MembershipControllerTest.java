@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.utils.AuthUtils;
 import com.example.gymbuddy.infrastructure.models.dtos.MembershipDto;
 import com.example.gymbuddy.infrastructure.services.IMembershipService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +38,8 @@ class MembershipControllerTest {
         var membership = MembershipDto.builder().memberId(0).active(true).build();
 
         when(membershipService.findAll()).thenReturn(List.of(membership));
-        mockMvc.perform(get("/memberships"))
+        mockMvc.perform(get("/memberships")
+                        .with(AuthUtils.generateAuth0Admin("1")))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].memberId").value(membership.getMemberId()));
@@ -51,6 +53,7 @@ class MembershipControllerTest {
 
         mockMvc.perform(
                 post("/memberships")
+                        .with(AuthUtils.generateAuth0Admin("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(membershipDto)))
                         .andDo(print())
