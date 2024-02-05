@@ -7,6 +7,7 @@ import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,6 +21,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
                     .firstName("Bob")
                     .lastName("TestLast")
                     .phoneNumber("0000000000")
+                    .authId(UUID.randomUUID().toString())
                     .build(),
                 Admin
         );

@@ -5,6 +5,8 @@ import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -27,12 +29,12 @@ public class RlsAspect {
     public void enforceRls(JoinPoint joinPoint) {
         var userDetails = UserAuthDetailsService.getUserAuthDetails();
         var authenticatedMember = memberDao.findByAuthId(userDetails.authId()).orElseThrow(() -> new MemberNotFoundException(userDetails.authId()));
+        var memberId = getMemberIdFromMethod(joinPoint);
 
         if (userDetails.admin()) {
             return;
         }
 
-        var memberId = getMemberIdFromMethod(joinPoint);
         if (authenticatedMember.getId().equals(memberId)) {
             return;
         }

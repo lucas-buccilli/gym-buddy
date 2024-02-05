@@ -86,6 +86,7 @@ def exclusions = [
         '**/entities/**',
         '**/*Dto**.*',
         '**/*Dao**.*',
+        '**/models/requests/**',
         '**/*Config*.*',
         '**/GymBuddyApplication.*',
         '**/exceptions/**',

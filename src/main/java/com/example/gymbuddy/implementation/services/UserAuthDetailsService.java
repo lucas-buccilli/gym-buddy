@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 public class UserAuthDetailsService {
+    private UserAuthDetailsService(){};
     public static UserAuthDetails getUserAuthDetails() {
         var securityContext = SecurityContextHolder.getContext();
         var principle = securityContext.getAuthentication().getPrincipal();

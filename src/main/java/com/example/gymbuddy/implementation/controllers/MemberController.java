@@ -2,11 +2,9 @@ package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -40,7 +38,7 @@ public class MemberController {
 
     @PreAuthorize("hasPermission('members', 'create') or hasRole('Admin')")
     @PostMapping
-    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody AddRequest addRequest) {
+    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) {
         var dao = modelMapper.map(addRequest, MemberDto.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dao));
     }
@@ -56,7 +54,7 @@ public class MemberController {
     @EnforceRls(memberIdParameterName = "id")
     @PatchMapping(path = "/{id}")
     public ResponseEntity<?> modifyMember(@PathVariable int id,
-                                          @Valid @RequestBody UpdateRequest updateRequest) throws IllegalAccessException {
+                                          @Valid @RequestBody MemberRequests.UpdateRequest updateRequest) throws IllegalAccessException {
         var modifiedMember = memberService.modifyMember(id, modelMapper.map(updateRequest, MemberDto.class));
         return ResponseEntity.status(HttpStatus.OK).body(modifiedMember);
     }
@@ -64,43 +62,8 @@ public class MemberController {
     @PreAuthorize("hasPermission('members', 'modify') or hasRole('Admin')")
     @PutMapping(path = "/{id}")
     public ResponseEntity<MemberDto> editMember(@PathVariable int id,
-                                                @Valid @RequestBody ReplaceRequest replaceRequest) {
+                                                @Valid @RequestBody MemberRequests.ReplaceRequest replaceRequest) {
         var dto = modelMapper.map(replaceRequest, MemberDto.class);
         return ResponseEntity.status(HttpStatus.OK).body(memberService.replaceMember(id, dto));
     }
-
-    public record AddRequest(
-            @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
-            @NotNull
-            String firstName,
-            @Size(max = 50, message = "The length of last name must be between less than 50 characters.")
-            @NotNull
-            String lastName,
-            @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
-            @NotNull
-            String phoneNumber,
-            @NotNull
-            String authId
-        ) {}
-
-    public record ReplaceRequest(
-            @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
-            @NotNull
-            String firstName,
-            @Size(max = 50, message = "The length of last name must be between less than 50 characters.")
-            @NotNull
-            String lastName,
-            @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
-            @NotNull
-            String phoneNumber
-        ) {}
-
-    public record UpdateRequest(
-            @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
-            String firstName,
-            @Size(max = 50, message = "The length of last name must be between less than 50 characters.")
-            String lastName,
-            @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
-            String phoneNumber
-    ) {}
 }
