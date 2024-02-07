@@ -7,6 +7,7 @@ import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,19 +21,23 @@ public class UserReportIntegrationTest extends IntegrationBase{
                     .firstName("Bob")
                     .lastName("TestLast")
                     .phoneNumber("0000000000")
-                    .build()
+                    .authId(UUID.randomUUID().toString())
+                    .build(),
+                Admin
         );
 
         var treadmill = createMachine(
                 MachineDto.builder()
                         .name("Treadmill")
-                        .build()
+                        .build(),
+                Admin
         );
 
         var bench = createMachine(
                 MachineDto.builder()
                         .name("Bench")
-                        .build()
+                        .build(),
+                Admin
         );
 
 
@@ -46,7 +51,8 @@ public class UserReportIntegrationTest extends IntegrationBase{
                         .numberSets(2)
                         .maxWeight(3)
                         .numberReps(1)
-                        .build()
+                        .build(),
+                Admin
         );
 
         var secondTreadmillWorkout = createMachineHistory(bob.getId(), treadmill.getId(),
@@ -56,7 +62,8 @@ public class UserReportIntegrationTest extends IntegrationBase{
                         .numberSets(5)
                         .maxWeight(6)
                         .numberReps(1)
-                        .build()
+                        .build(),
+                Admin
         );
 
         var actualBenchWorkoutHistory = createMachineHistory(bob.getId(), bench.getId(),
@@ -66,7 +73,8 @@ public class UserReportIntegrationTest extends IntegrationBase{
                         .numberSets(8)
                         .maxWeight(9)
                         .numberReps(1)
-                        .build()
+                        .build(),
+                Admin
         );
 
         createMachineHistory(bob.getId(), bench.getId(),
@@ -76,12 +84,13 @@ public class UserReportIntegrationTest extends IntegrationBase{
                         .numberSets(8)
                         .maxWeight(9)
                         .numberReps(1)
-                        .build()
+                        .build(),
+                Admin
         );
 
-        var reportWithNoHistories = getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.minusDays(1));
-        var reportWithTreadmillHistories = getUserReport(bob.getId(), treadmill.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1));
-        var reportWithBenchHistories = getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1));
+        var reportWithNoHistories = getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.minusDays(1), Admin);
+        var reportWithTreadmillHistories = getUserReport(bob.getId(), treadmill.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1), Admin);
+        var reportWithBenchHistories = getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1), Admin);
 
         assertEquals(0, reportWithNoHistories.getNumberOfWorkouts());
         assertEquals(0, reportWithNoHistories.getMachineProgress().size());

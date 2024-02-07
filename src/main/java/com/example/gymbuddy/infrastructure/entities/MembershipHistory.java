@@ -4,7 +4,14 @@ package com.example.gymbuddy.infrastructure.entities;
 import com.example.gymbuddy.implementation.converters.DateTimeConverter;
 import com.example.gymbuddy.implementation.converters.MembershipOperationConverter;
 import com.example.gymbuddy.infrastructure.entities.enums.MembershipOperation;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.time.LocalDateTime;

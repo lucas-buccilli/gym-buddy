@@ -5,9 +5,6 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class MachineIntegrationTest extends IntegrationBase {
 
@@ -17,10 +14,11 @@ public class MachineIntegrationTest extends IntegrationBase {
         var treadmill = createMachine(
                 MachineDto.builder()
                         .name("Treadmill")
-                        .build()
+                        .build(),
+                Admin
         );
 
-        deleteMachine(treadmill.getName());
+        deleteMachine(treadmill.getName(), Admin);
 
     }
 
@@ -29,11 +27,12 @@ public class MachineIntegrationTest extends IntegrationBase {
         var treadmill = createMachine(
                 MachineDto.builder()
                         .name("Treadmill")
-                        .build()
+                        .build(),
+                Admin
         );
         treadmill.setName("Bench Press");
 
-        var replacedMachine = replaceMachine(treadmill.getId(), treadmill);
+        var replacedMachine = replaceMachine(treadmill.getId(), treadmill, Admin);
         assertEquals(treadmill.getName(), replacedMachine.getName());
         assertEquals(treadmill.getId(), replacedMachine.getId());
     }

@@ -32,6 +32,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:3.0.8'
+    implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.8'
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
@@ -42,6 +43,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.security:spring-security-test:6.2.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.8'
     testImplementation 'org.testcontainers:testcontainers:1.19.1'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
@@ -84,6 +86,7 @@ def exclusions = [
         '**/entities/**',
         '**/*Dto**.*',
         '**/*Dao**.*',
+        '**/models/requests/**',
         '**/*Config*.*',
         '**/GymBuddyApplication.*',
         '**/exceptions/**',

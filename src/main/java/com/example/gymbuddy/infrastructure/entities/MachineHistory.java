@@ -1,7 +1,15 @@
 package com.example.gymbuddy.infrastructure.entities;
 
 import com.example.gymbuddy.implementation.converters.DateTimeConverter;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -26,11 +34,12 @@ public class MachineHistory {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime workoutDate;
 
+    // Need to configure model mapper to handle mapping member_id to member
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "machine_id")
+    @JsonAlias("machine_id")
     private Machine machine;
 }

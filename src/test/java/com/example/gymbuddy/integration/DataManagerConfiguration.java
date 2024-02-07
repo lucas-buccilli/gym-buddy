@@ -1,6 +1,10 @@
 package com.example.gymbuddy.integration;
 
-import com.example.gymbuddy.implementation.repositories.*;
+import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
+import com.example.gymbuddy.implementation.repositories.MachineRepository;
+import com.example.gymbuddy.implementation.repositories.MemberRepository;
+import com.example.gymbuddy.implementation.repositories.MembershipHistoryRepository;
+import com.example.gymbuddy.implementation.repositories.MembershipRepository;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 

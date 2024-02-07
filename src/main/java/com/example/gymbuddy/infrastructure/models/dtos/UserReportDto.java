@@ -1,7 +1,5 @@
 package com.example.gymbuddy.infrastructure.models.dtos;
 
-import com.example.gymbuddy.infrastructure.entities.MachineHistory;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

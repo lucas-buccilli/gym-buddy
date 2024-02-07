@@ -1,5 +1,7 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.utils.AuthUtils;
+import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.implementation.validators.requests.MachineHistoryRequestValidator;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,9 +28,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MachineHistoryController.class)
+@Import(SecurityConfig.class)
 class MachineHistoryControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -52,6 +58,7 @@ class MachineHistoryControllerTest {
                 .thenReturn(machineHistoryDto);
 
         mockMvc.perform(post("/members/1/machines/1/history")
+                .with(AuthUtils.generateAuth0Admin("1"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(machineHistoryDto)))
                 .andDo(print())
@@ -69,6 +76,7 @@ class MachineHistoryControllerTest {
                 .thenReturn(List.of(new ValidationError("Validation Error")));
 
         mockMvc.perform(post("/members/1/machines/1/history")
+                        .with(AuthUtils.generateAuth0Admin("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(machineHistoryDto)))
                 .andDo(print())
@@ -87,7 +95,8 @@ class MachineHistoryControllerTest {
         var machineHistoryList = List.of(machineHistoryDto);
         when(machineHistoryService.findBy(anyInt(), anyInt(), any())).thenReturn(machineHistoryList);
 
-        var result = mockMvc.perform(get("/members/1/machines/2/history"))
+        var result = mockMvc.perform(get("/members/1/machines/2/history")
+                        .with(AuthUtils.generateAuth0Admin("1")))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].memberId").value(machineHistoryDto.getMemberId()))
@@ -109,7 +118,8 @@ class MachineHistoryControllerTest {
     when(machineHistoryService.findLatestWorkout(anyInt(), anyInt()))
             .thenReturn(Optional.of(machineHistoryDto));
 
-        var result = mockMvc.perform(get("/members/1/machines/2/history/latest"))
+        var result = mockMvc.perform(get("/members/1/machines/2/history/latest")
+                        .with(AuthUtils.generateAuth0Admin("1")))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(machineHistoryDto.getMemberId()))
@@ -130,7 +140,8 @@ class MachineHistoryControllerTest {
         when(machineHistoryService.findLatestWorkout(anyInt(), anyInt()))
                 .thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/members/1/machines/2/history/latest"))
+        mockMvc.perform(get("/members/1/machines/2/history/latest")
+                        .with(AuthUtils.generateAuth0Admin("1")))
                 .andExpect(status().isNotFound());
     }
 }

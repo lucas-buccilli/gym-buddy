@@ -3,7 +3,13 @@ package com.example.gymbuddy.implementation.services;
 import com.example.gymbuddy.infrastructure.models.Period;
 import com.example.gymbuddy.infrastructure.models.dtos.AdminReportDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
-import com.example.gymbuddy.infrastructure.services.*;
+import com.example.gymbuddy.infrastructure.services.IReportActiveMembershipsService;
+import com.example.gymbuddy.infrastructure.services.IReportDateService;
+import com.example.gymbuddy.infrastructure.services.IReportMachineProgressService;
+import com.example.gymbuddy.infrastructure.services.IReportMachineUsageService;
+import com.example.gymbuddy.infrastructure.services.IReportNumberOfVisitorsService;
+import com.example.gymbuddy.infrastructure.services.IReportNumberOfWorkoutDaysService;
+import com.example.gymbuddy.infrastructure.services.IReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

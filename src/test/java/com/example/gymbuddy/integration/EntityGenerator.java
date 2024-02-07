@@ -16,6 +16,7 @@ public class EntityGenerator {
         member.setFirstName("FirstName" + UUID.randomUUID());
         member.setLastName("LastName" + UUID.randomUUID());
         member.setPhoneNumber("5555555555");
+        member.setAuthId( UUID.randomUUID().toString());
         return member;
     }
 
