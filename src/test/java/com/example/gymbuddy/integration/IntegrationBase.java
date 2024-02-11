@@ -59,6 +59,7 @@ public abstract class IntegrationBase {
         var result = mvc.perform(post("/members").with(getAuthUser(authenticatedUser))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberDao)))
+                .andExpect(status().isCreated())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
@@ -80,6 +81,7 @@ public abstract class IntegrationBase {
         var result = mvc.perform(post("/machines").with(getAuthUser(authenticatedUser))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(machineDao)))
+                .andExpect(status().isCreated())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MachineDto.class);
@@ -104,6 +106,7 @@ public abstract class IntegrationBase {
                         .with(getAuthUser(authenticatedUser))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(machineHistoryDao)))
+                .andExpect(status().isCreated())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MachineHistoryDto.class);
@@ -116,6 +119,7 @@ public abstract class IntegrationBase {
                         .param("endDate", endDate.toString())
                         .param("memberId", Integer.toString(memberId))
                         .param("machineId", Integer.toString(machineId)))
+                .andExpect(status().isOk())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), UserReportDto.class);
@@ -126,6 +130,7 @@ public abstract class IntegrationBase {
                         .with(getAuthUser(authenticatedUser))
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString()))
+                .andExpect(status().isOk())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), AdminReportDto.class);
@@ -152,6 +157,7 @@ public abstract class IntegrationBase {
                         .with(getAuthUser(authenticatedUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(memberDao)))
+                .andExpect(status().isOk())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
@@ -162,6 +168,7 @@ public abstract class IntegrationBase {
                         .with(getAuthUser(authenticatedUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(memberDto)))
+                .andExpect(status().isOk())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MemberDto.class);
@@ -172,6 +179,7 @@ public abstract class IntegrationBase {
                         .with(getAuthUser(authenticatedUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(machineDto)))
+                .andExpect(status().isOk())
                 .andReturn();
 
         return objectMapper.readValue(result.getResponse().getContentAsString(), MachineDto.class);

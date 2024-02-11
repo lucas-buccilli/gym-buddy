@@ -10,6 +10,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnforceRls {
-    String memberIdParameterName();
-
+    String memberIdParameterName() default "";
+    boolean noMemberParameter() default false;
 }

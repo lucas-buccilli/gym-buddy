@@ -16,11 +16,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -155,7 +157,51 @@ class RlsAspectTest {
 
         assertThrows(MemberNotFoundException.class, () -> testClassProxy.methodOne(1));
     }
+    @Test
+    public void shouldReturnWhenMemberNoMemberParameter() {
+        var authentication = mock(Authentication.class);
+        var jwt = mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        doReturn(List.of(new SimpleGrantedAuthority("ROLE_Member"))).when(authentication).getAuthorities();
+        when(jwt.getClaims()).thenReturn(Map.of("sub", "authId"));
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        when(memberDao.findByAuthId(any())).thenReturn(Optional.of(MemberDto.builder().id(1).build()));
+
+        assertDoesNotThrow(() -> testClassProxy.methodSix());
+    }
+
+    @Test
+    public void shouldThrowWhenNoAnnotation() {
+        var authentication = mock(Authentication.class);
+        var jwt = mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        doReturn(List.of(new SimpleGrantedAuthority("ROLE_Member"))).when(authentication).getAuthorities();
+        when(jwt.getClaims()).thenReturn(Map.of("sub", "authId"));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        when(memberDao.findByAuthId(any())).thenReturn(Optional.of(MemberDto.builder().id(1).build()));
+
+        assertThrows(IllegalStateException.class, () -> testClassProxy.methodFive());
+    }
+
+    @Test
+    public void shouldThrowWhenMissingParameterName() {
+        var authentication = mock(Authentication.class);
+        var jwt = mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        doReturn(List.of(new SimpleGrantedAuthority("ROLE_Member"))).when(authentication).getAuthorities();
+        when(jwt.getClaims()).thenReturn(Map.of("sub", "authId"));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        when(memberDao.findByAuthId(any())).thenReturn(Optional.of(MemberDto.builder().id(1).build()));
+
+        assertThrows(IllegalStateException.class, () -> testClassProxy.methodSeven());
+    }
+    @RestController
     public static class TestClass {
         @EnforceRls(memberIdParameterName = "id")
         public void methodOne(Integer id) {
@@ -172,5 +218,13 @@ class RlsAspectTest {
         @EnforceRls(memberIdParameterName = "id")
         public void methodFour() {
         }
+
+        public void methodFive() {}
+
+        @EnforceRls(noMemberParameter = true)
+        public void methodSix() {}
+
+        @EnforceRls()
+        public void methodSeven() {}
     }
 }
