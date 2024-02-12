@@ -30,6 +30,7 @@ public class MemberController {
     private final ModelMapper modelMapper;
 
     @PreAuthorize("hasRole('Admin')")
+    @EnforceRls(noMemberParameter = true)
     @GetMapping
     public ResponseEntity<List<MemberDto>> findAll() {
         return ResponseEntity.ok(memberService.findAll());
@@ -37,6 +38,7 @@ public class MemberController {
 
 
     @PreAuthorize("hasPermission('members', 'create') or hasRole('Admin')")
+    @EnforceRls(noMemberParameter = true)
     @PostMapping
     public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) {
         var dao = modelMapper.map(addRequest, MemberDto.class);
@@ -44,6 +46,7 @@ public class MemberController {
     }
 
     @PreAuthorize("hasPermission('members', 'delete') or hasRole('Admin')")
+    @EnforceRls(memberIdParameterName = "id")
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteMember(@PathVariable int id) {
         memberService.deleteMember(id);
@@ -60,6 +63,7 @@ public class MemberController {
     }
 
     @PreAuthorize("hasPermission('members', 'modify') or hasRole('Admin')")
+    @EnforceRls(memberIdParameterName = "id")
     @PutMapping(path = "/{id}")
     public ResponseEntity<MemberDto> editMember(@PathVariable int id,
                                                 @Valid @RequestBody MemberRequests.ReplaceRequest replaceRequest) {

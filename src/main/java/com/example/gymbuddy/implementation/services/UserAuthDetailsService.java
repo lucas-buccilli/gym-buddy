@@ -18,6 +18,6 @@ public class UserAuthDetailsService {
                 return new UserAuthDetails((String) sub, isAdmin);
             }
         }
-        throw new AuthenticationCredentialsNotFoundException("Error parsing user details from context");
+        throw new AuthenticationCredentialsNotFoundException("xError parsing user details from context");
     }
 }

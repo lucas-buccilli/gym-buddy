@@ -37,3 +37,11 @@ okta:
   oauth2:
     issuer: https://dev-smtjhvt04ywhqy3i.us.auth0.com/
     audience: https://gym-buddy.com
+
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+#  endpoints:
+#    enabled-by-default: false

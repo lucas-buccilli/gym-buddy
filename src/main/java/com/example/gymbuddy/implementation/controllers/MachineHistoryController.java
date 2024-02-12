@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.implementation.validators.requests.MachineHistoryRequestValidator;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +31,8 @@ public class MachineHistoryController {
     private final MachineHistoryRequestValidator validator;
 
     @GetMapping
+    @PreAuthorize("hasPermission('machine-histories', 'read') or hasRole('Admin')")
+    @EnforceRls(memberIdParameterName = "memberId")
     public ResponseEntity<List<MachineHistoryDto>> getHistory(@PathVariable(name = "member_id") int memberId,
                                                               @PathVariable(name = "machine_id") int machineId,
                                                               @Nullable
@@ -37,6 +41,8 @@ public class MachineHistoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasPermission('machine-histories', 'create') or hasRole('Admin')")
+    @EnforceRls(memberIdParameterName = "memberId")
     public ResponseEntity<MachineHistoryDto> addMachineHistory(@PathVariable(name = "member_id") Integer memberId,
                                                                @PathVariable(name = "machine_id") Integer machineId,
                                                                @Valid @RequestBody MachineHistoryDto machineHistoryDao) {
@@ -48,6 +54,8 @@ public class MachineHistoryController {
     }
 
     @RequestMapping(path = "/latest", method = RequestMethod.GET)
+    @PreAuthorize("hasPermission('machine-histories', 'read') or hasRole('Admin')")
+    @EnforceRls(memberIdParameterName = "memberId")
     public ResponseEntity<MachineHistoryDto> getLatestMachineHistory(@PathVariable(name = "member_id") int memberId,
                                                                      @PathVariable(name = "machine_id") int machineId) {
         return machineHistoryService.findLatestWorkout(memberId, machineId)

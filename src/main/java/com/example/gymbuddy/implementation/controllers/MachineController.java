@@ -1,5 +1,6 @@
 package com.example.gymbuddy.implementation.controllers;
 
+import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,23 +30,31 @@ public class MachineController {
     private final ModelMapper modelMapper;
 
     @GetMapping
+    @PreAuthorize("hasPermission('machines', 'read') or hasRole('Admin')")
+    @EnforceRls(noMemberParameter = true)
     public ResponseEntity<List<MachineDto>> findAll() {
         return ResponseEntity.ok(machineService.findAll());
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('Admin')")
+    @EnforceRls(noMemberParameter = true)
     public ResponseEntity<MachineDto> addMachine(@Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
         var machineDto = modelMapper.map(replaceOrAddRequest, MachineDto.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(machineService.addMachine(machineDto));
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('Admin')")
+    @EnforceRls(noMemberParameter = true)
     public ResponseEntity<MachineDto> deleteMachine(@Valid @RequestBody DeleteRequest request) {
         machineService.deleteMachineByName(request.name);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "/{id}")
+    @PreAuthorize("hasRole('Admin')")
+    @EnforceRls(noMemberParameter = true)
     public ResponseEntity<MachineDto> replaceMachine(@PathVariable int id,
                                                      @Valid @RequestBody ReplaceOrAddRequest replaceOrAddRequest) {
         var machineDto = modelMapper.map(replaceOrAddRequest, MachineDto.class);
