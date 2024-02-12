@@ -2,6 +2,7 @@ package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,12 +35,12 @@ public class MemberServiceTest {
     void findAll() {
         var memberDtoList = List.of(new MemberDto());
 
-        when(memberDataProvider.findAll()).thenReturn(memberDtoList);
+        when(memberDataProvider.findAll(any(PageRequest.class))).thenReturn(memberDtoList);
 
-        var result = memberService.findAll();
+        var result = memberService.findAll(new PageRequest());
         assertNotNull(result);
         assertEquals(memberDtoList, result);
-        verify(memberDataProvider).findAll();
+        verify(memberDataProvider).findAll(any(PageRequest.class));
     }
 
     @Test

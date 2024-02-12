@@ -1,6 +1,6 @@
 package com.example.gymbuddy.implementation.daos;
 
-import com.example.gymbuddy.implementation.database.specificationBuilders.MachineHistorySpecificationBuilder;
+import com.example.gymbuddy.implementation.database.specificationBuilders.SpecificationBuilder;
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
 import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,11 +45,11 @@ public class MachineHistoryDao implements IMachineHistoryDao {
 
     @Override
     public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, @Nullable LocalDateTime workoutDate) {
-        MachineHistorySpecificationBuilder builder = MachineHistorySpecificationBuilder.builder()
-                .hasMachineId(machineId)
-                .hasMemberId(memberId);
+        var builder = new SpecificationBuilder<MachineHistory>()
+                .hasNestedField("machine", "machineId", machineId)
+                .hasNestedField("member", "memberId", memberId);
         if (Objects.nonNull(workoutDate)) {
-            builder.hasWorkoutDate(workoutDate);
+            builder.hasField("workoutDate", workoutDate);
         }
         var histories = machineHistoryRepository.findAll(builder.build());
         return histories.stream()
@@ -69,9 +70,9 @@ public class MachineHistoryDao implements IMachineHistoryDao {
 
     @Override
     public Map<String, Long> getMachineUsage(LocalDateTime startDate, LocalDateTime endDate) {
-        return machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
-                .hasWorkoutDateLessOrEqualTo(endDate)
-                .hasWorkoutDateGreaterOrEqualTo(startDate)
+        return machineHistoryRepository.findAll(new SpecificationBuilder<MachineHistory>()
+                .hasFieldLessThanOrEqualTo("workoutDate", endDate)
+                .hasFieldGreaterThanOrEqualTo("workoutDate", startDate)
                 .build()
         ).stream()
                 .collect(Collectors.groupingBy(
@@ -83,12 +84,13 @@ public class MachineHistoryDao implements IMachineHistoryDao {
 
     public Map<String, List<MachineHistoryDto>> getMachineProgress(LocalDateTime startDate, LocalDateTime endDate, Integer memberId, Integer machineId) {
 
-        return machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
-                        .hasMemberId(memberId)
-                        .hasMachineId(machineId)
-                    .hasWorkoutDateGreaterOrEqualTo(startDate)
-                    .hasWorkoutDateLessOrEqualTo(endDate)
-                .build(), Sort.by("workoutDate")
+        return machineHistoryRepository.findAll(new SpecificationBuilder<MachineHistory>()
+                        .hasNestedField("member", "id", memberId)
+                        .hasNestedField("machine", "id", machineId)
+                        .hasFieldGreaterThanOrEqualTo("workoutDate", startDate)
+                        .hasFieldLessThanOrEqualTo("workoutDate", endDate)
+                        .build(),
+                        Sort.by("workoutDate")
         ).stream()
                 .collect(Collectors.groupingBy(
                         machineHistory -> machineHistory.getMachine().getName(),
@@ -100,11 +102,11 @@ public class MachineHistoryDao implements IMachineHistoryDao {
     @Override
     public Integer getNumberOfWorkoutDays(LocalDateTime startDate, LocalDateTime endDate, Integer memberId) {
 
-        return machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
-                .hasMemberId(memberId)
-                .hasWorkoutDateGreaterOrEqualTo(startDate)
-                .hasWorkoutDateLessOrEqualTo(endDate)
-                .build()
+        return machineHistoryRepository.findAll(new SpecificationBuilder<MachineHistory>()
+                        .hasNestedField("member", "id", memberId)
+                        .hasFieldGreaterThanOrEqualTo("workoutDate", startDate)
+                        .hasFieldLessThanOrEqualTo("workoutDate", endDate)
+                        .build()
         ).stream()
             .map(machineHistory -> machineHistory.getWorkoutDate().truncatedTo(ChronoUnit.DAYS))
             .collect(toSet()).size();

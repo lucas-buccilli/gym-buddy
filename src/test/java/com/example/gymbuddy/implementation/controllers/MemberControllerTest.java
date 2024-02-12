@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.controllers;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.implementation.utils.AuthUtils;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,12 +15,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,9 +44,17 @@ class MemberControllerTest {
     public void shouldReturnAllMembers() throws Exception {
         var member = MemberDto.builder()
                 .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
-        when(memberService.findAll()).thenReturn(List.of(member));
+        var pageRequest = PageRequest.build(
+                0,
+                100,
+                Collections.emptyMap(),
+                Collections.emptyMap()
+        );
+        when(memberService.findAll(any())).thenReturn(List.of(member));
 
-        mockMvc.perform(get("/members").with(AuthUtils.generateAuth0Admin("1")))
+        mockMvc.perform(post("/members/search").with(AuthUtils.generateAuth0Admin("1"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(pageRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].firstName").value(member.getFirstName()))
