@@ -26,7 +26,7 @@ public class RlsAspect {
      * This only executes before methods annotated with {@link  EnforceRls#memberIdParameterName()}
      * @param joinPoint The calling methods join point
      */
-    @Before("@within(org.springframework.web.bind.annotation.RestController) && execution(public * *(..)) && within(com.example.gymbuddy.*)")
+    @Before("@within(org.springframework.web.bind.annotation.RestController) && execution(public * *(..)) && within(com.example.gymbuddy..*)")
     public void enforceRls(JoinPoint joinPoint) {
         var userDetails = UserAuthDetailsService.getUserAuthDetails();
         var authenticatedMember = memberDao.findByAuthId(userDetails.authId()).orElseThrow(() -> new MemberNotFoundException(userDetails.authId()));
