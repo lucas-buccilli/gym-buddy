@@ -1,6 +1,5 @@
 package com.example.gymbuddy.infrastructure.models.dtos;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

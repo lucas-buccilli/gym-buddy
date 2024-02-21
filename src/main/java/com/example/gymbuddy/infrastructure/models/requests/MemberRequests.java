@@ -18,7 +18,10 @@ public class MemberRequests {
         @NotNull
         String phoneNumber;
         @NotNull
-        String authId;
+        String email;
+        @NotNull
+        String password;
+
     }
 
     @Data

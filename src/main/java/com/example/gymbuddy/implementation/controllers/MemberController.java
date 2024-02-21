@@ -2,6 +2,7 @@ package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.implementation.validators.requests.PaginatedRequestValidator;
+import com.example.gymbuddy.infrastructure.exceptions.AuthCreationException;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
@@ -45,9 +46,9 @@ public class MemberController  {
     @PreAuthorize("hasPermission('members', 'create') or hasRole('Admin')")
     @EnforceRls(noMemberParameter = true)
     @PostMapping
-    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) {
-        var dao = modelMapper.map(addRequest, MemberDto.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dao));
+    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) throws AuthCreationException {
+        var dto = modelMapper.map(addRequest, MemberDto.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dto, addRequest.getEmail(), addRequest.getPassword()));
     }
 
     @PreAuthorize("hasPermission('members', 'delete') or hasRole('Admin')")

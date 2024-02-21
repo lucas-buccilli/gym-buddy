@@ -1,14 +1,16 @@
 package com.example.gymbuddy.infrastructure.services;
 
+import com.example.gymbuddy.infrastructure.exceptions.AuthCreationException;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 
 import java.util.List;
 
 public interface IMemberService {
     List<MemberDto> findAll(PageRequest pageRequest);
 
-    MemberDto addMember(MemberDto memberDao);
+    MemberDto addMember(MemberDto dto, String email, String password) throws AuthCreationException;
 
     void deleteMember(int id);
 
