@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
 
 public class Specifications {
+    private Specifications(){}
     public static <T> Specification<T> hasField(String field, String value) {
         return (entity, cq, cb) -> cb.equal(entity.get(field), value);
     }

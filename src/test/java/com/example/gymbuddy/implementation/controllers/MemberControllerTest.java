@@ -5,6 +5,7 @@ import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.implementation.utils.AuthUtils;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.enums.SortOptions;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -47,8 +49,8 @@ class MemberControllerTest {
         var pageRequest = PageRequest.build(
                 0,
                 100,
-                Collections.emptyMap(),
-                Collections.emptyMap()
+                Map.of("firstName", SortOptions.ASC),
+                Map.of("firstName", "testFirst")
         );
         when(memberService.findAll(any())).thenReturn(List.of(member));
 
@@ -61,6 +63,27 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$[0].lastName").value(member.getLastName()))
                 .andExpect(jsonPath("$[0].phoneNumber").value(member.getPhoneNumber()));
     }
+
+    @Test
+    public void shouldReturnBadRequestForIncorrectFieldNames() throws Exception {
+        var member = MemberDto.builder()
+                .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
+        var pageRequest = PageRequest.build(
+                0,
+                100,
+                Map.of("IncorrectField", SortOptions.ASC),
+                Map.of("IncorrectField", "testFirst")
+        );
+        when(memberService.findAll(any())).thenReturn(List.of(member));
+
+        mockMvc.perform(post("/members/search").with(AuthUtils.generateAuth0Admin("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pageRequest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("[Invalid sort field {IncorrectField}, Invalid filter field {IncorrectField}]"));
+    }
+
 
     @Test
     public void shouldAddMember() throws Exception {
