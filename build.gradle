@@ -87,7 +87,6 @@ tasks.register("unitTests", Test) {
 def exclusions = [
         '**/entities/**',
         '**/*Dto**.*',
-        '**/*Dao**.*',
         '**/models/requests/**',
         '**/*Config*.*',
         '**/GymBuddyApplication.*',

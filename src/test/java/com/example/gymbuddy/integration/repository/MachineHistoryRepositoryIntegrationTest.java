@@ -1,9 +1,10 @@
 package com.example.gymbuddy.integration.repository;
 
-import com.example.gymbuddy.implementation.database.specificationBuilders.MachineHistorySpecificationBuilder;
+import com.example.gymbuddy.implementation.database.specificationBuilders.SpecificationBuilder;
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
 import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
+import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.integration.DbContainer;
 import com.example.gymbuddy.integration.EntityGenerator;
 import org.junit.jupiter.api.AfterEach;
@@ -15,7 +16,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,24 +51,30 @@ public class MachineHistoryRepositoryIntegrationTest {
         member = memberRepository.save(member);
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
         machineHistory = machineHistoryRepository.save(machineHistory);
-        var specification = MachineHistorySpecificationBuilder.builder()
-                .hasMachineId(machine.getId())
-                .hasMemberId(member.getId())
-                .hasWorkoutDate(machineHistory.getWorkoutDate())
+        var specification = new SpecificationBuilder<MachineHistory>()
+                .hasNestedField("member", "id", member.getId())
+                .hasNestedField("machine", "id", machine.getId())
+                .hasField("workoutDate", machineHistory.getWorkoutDate())
                 .build();
         var machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(1, machineHistories.size());
         assertEquals(machineHistory, machineHistories.get(0));
 
-        specification = MachineHistorySpecificationBuilder.builder().hasMachineId(machine.getId() + 1).build();
+        specification = new SpecificationBuilder<MachineHistory>()
+                .hasNestedField("machine", "id", machine.getId() + 1)
+                .build();
         machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(0, machineHistories.size());
 
-        specification = MachineHistorySpecificationBuilder.builder().hasMemberId(member.getId() + 1).build();
+        specification = new SpecificationBuilder<MachineHistory>()
+                .hasNestedField("member", "id", member.getId() + 1)
+                .build();
         machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(0, machineHistories.size());
 
-        specification = MachineHistorySpecificationBuilder.builder().hasWorkoutDate(LocalDateTime.now().minusDays(1L)).build();
+        specification = new SpecificationBuilder<MachineHistory>()
+                .hasField("workoutDate", machineHistory.getWorkoutDate().minusDays(1L))
+                .build();
         machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(0, machineHistories.size());
     }
@@ -81,9 +87,9 @@ public class MachineHistoryRepositoryIntegrationTest {
         member = memberRepository.save(member);
         var machineHistory = EntityGenerator.getMachineHistory(machine, member);
         machineHistory = machineHistoryRepository.save(machineHistory);
-        var specification = MachineHistorySpecificationBuilder.builder()
-                .hasMachineId(machine.getId())
-                .hasMemberId(member.getId())
+        var specification = new SpecificationBuilder<MachineHistory>()
+                .hasNestedField("member", "id", member.getId())
+                .hasNestedField("machine", "id", machine.getId())
                 .build();
         var machineHistories = machineHistoryRepository.findAll(specification);
         assertEquals(1, machineHistories.size());
@@ -119,10 +125,12 @@ public class MachineHistoryRepositoryIntegrationTest {
         machineHistory = machineHistoryRepository.save(machineHistory);
         machineHistoryRepository.save(machineHistory);
 
-        var result = machineHistoryRepository.findAll(MachineHistorySpecificationBuilder.builder()
-                .hasWorkoutDateLessOrEqualTo(machineHistory.getWorkoutDate().plus(Duration.ofHours(1)))
-                .hasWorkoutDateGreaterOrEqualTo(machineHistory.getWorkoutDate().minus(Duration.ofHours(1)))
-                .build());
+        var result = machineHistoryRepository.findAll(
+                new SpecificationBuilder<MachineHistory>()
+                    .hasFieldGreaterThanOrEqualTo("workoutDate", machineHistory.getWorkoutDate().minus(Duration.ofHours(1)))
+                    .hasFieldLessThanOrEqualTo("workoutDate", machineHistory.getWorkoutDate().plus(Duration.ofHours(1)))
+                    .build()
+        );
 
         assertEquals(1, result.size());
         assertEquals(machineHistory.getId(), result.get(0).getId());

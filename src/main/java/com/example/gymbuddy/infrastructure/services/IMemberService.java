@@ -1,11 +1,12 @@
 package com.example.gymbuddy.infrastructure.services;
 
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 
 import java.util.List;
 
 public interface IMemberService {
-    List<MemberDto> findAll();
+    List<MemberDto> findAll(PageRequest pageRequest);
 
     MemberDto addMember(MemberDto memberDao);
 

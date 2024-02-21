@@ -16,7 +16,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
 
     @Test
     void generateUserReport() throws Exception {
-        var bob =  createMember(
+        var bob =  Member.create(
                 MemberDto.builder()
                     .firstName("Bob")
                     .lastName("TestLast")
@@ -26,14 +26,14 @@ public class UserReportIntegrationTest extends IntegrationBase{
                 Admin
         );
 
-        var treadmill = createMachine(
+        var treadmill = Machine.create(
                 MachineDto.builder()
                         .name("Treadmill")
                         .build(),
                 Admin
         );
 
-        var bench = createMachine(
+        var bench = Machine.create(
                 MachineDto.builder()
                         .name("Bench")
                         .build(),
@@ -44,7 +44,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
         LocalDateTime workoutDate = LocalDateTime.now();
         LocalDateTime nextDayWorkoutDate = workoutDate.plusDays(1);
 
-        var firstTreadmillWorkout = createMachineHistory(bob.getId(), treadmill.getId(),
+        var firstTreadmillWorkout = MachineHistory.create(bob.getId(), treadmill.getId(),
                 MachineHistoryDto.builder()
                         .maxWeight(1)
                         .workoutDate(workoutDate)
@@ -55,7 +55,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
                 Admin
         );
 
-        var secondTreadmillWorkout = createMachineHistory(bob.getId(), treadmill.getId(),
+        var secondTreadmillWorkout = MachineHistory.create(bob.getId(), treadmill.getId(),
                 MachineHistoryDto.builder()
                         .maxWeight(4)
                         .workoutDate(nextDayWorkoutDate)
@@ -66,7 +66,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
                 Admin
         );
 
-        var actualBenchWorkoutHistory = createMachineHistory(bob.getId(), bench.getId(),
+        var actualBenchWorkoutHistory = MachineHistory.create(bob.getId(), bench.getId(),
                 MachineHistoryDto.builder()
                         .maxWeight(7)
                         .workoutDate(workoutDate)
@@ -77,7 +77,7 @@ public class UserReportIntegrationTest extends IntegrationBase{
                 Admin
         );
 
-        createMachineHistory(bob.getId(), bench.getId(),
+        MachineHistory.create(bob.getId(), bench.getId(),
                 MachineHistoryDto.builder()
                         .maxWeight(7)
                         .workoutDate(workoutDate.plusYears(1))
@@ -88,9 +88,9 @@ public class UserReportIntegrationTest extends IntegrationBase{
                 Admin
         );
 
-        var reportWithNoHistories = getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.minusDays(1), Admin);
-        var reportWithTreadmillHistories = getUserReport(bob.getId(), treadmill.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1), Admin);
-        var reportWithBenchHistories = getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1), Admin);
+        var reportWithNoHistories = Reports.getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.minusDays(1), Admin);
+        var reportWithTreadmillHistories = Reports.getUserReport(bob.getId(), treadmill.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1), Admin);
+        var reportWithBenchHistories = Reports.getUserReport(bob.getId(), bench.getId(), workoutDate.minusDays(2), workoutDate.plusDays(1), Admin);
 
         assertEquals(0, reportWithNoHistories.getNumberOfWorkouts());
         assertEquals(0, reportWithNoHistories.getMachineProgress().size());

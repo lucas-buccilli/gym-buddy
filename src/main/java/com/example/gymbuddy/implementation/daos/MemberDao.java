@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.daos;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.entities.Member;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,8 +19,8 @@ public class MemberDao implements IMemberDao {
     private final MemberRepository memberRepository;
 
     @Override
-    public List<MemberDto> findAll() {
-        return memberRepository.findAll().stream()
+    public List<MemberDto> findAll(PageRequest pageRequest) {
+        return memberRepository.findAll(pageRequest.toSpecification(), pageRequest.toPageable()).stream()
                 .map(memberEntity -> modelMapper.map(memberEntity, MemberDto.class))
                 .toList();
     }

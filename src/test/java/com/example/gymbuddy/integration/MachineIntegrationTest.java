@@ -11,20 +11,20 @@ public class MachineIntegrationTest extends IntegrationBase {
     @Test
     void shouldOperateOnMachines() throws Exception {
 
-        var treadmill = createMachine(
+        var treadmill = Machine.create(
                 MachineDto.builder()
                         .name("Treadmill")
                         .build(),
                 Admin
         );
 
-        deleteMachine(treadmill.getName(), Admin);
+        Machine.delete(treadmill.getName(), Admin);
 
     }
 
     @Test
     void shouldReplaceMachine() throws Exception {
-        var treadmill = createMachine(
+        var treadmill = Machine.create(
                 MachineDto.builder()
                         .name("Treadmill")
                         .build(),
@@ -32,7 +32,7 @@ public class MachineIntegrationTest extends IntegrationBase {
         );
         treadmill.setName("Bench Press");
 
-        var replacedMachine = replaceMachine(treadmill.getId(), treadmill, Admin);
+        var replacedMachine = Machine.replace(treadmill.getId(), treadmill, Admin);
         assertEquals(treadmill.getName(), replacedMachine.getName());
         assertEquals(treadmill.getId(), replacedMachine.getId());
     }

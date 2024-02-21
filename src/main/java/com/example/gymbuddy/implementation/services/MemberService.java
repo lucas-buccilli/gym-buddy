@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.services;
 import com.example.gymbuddy.implementation.patchers.MemberPatcher;
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ public class MemberService implements IMemberService {
     private final IMemberDao memberDataProvider;
 
     @Override
-    public List<MemberDto> findAll() {
-        return memberDataProvider.findAll();
+    public List<MemberDto> findAll(PageRequest pageRequest) {
+        return memberDataProvider.findAll(pageRequest);
     }
 
     @Override

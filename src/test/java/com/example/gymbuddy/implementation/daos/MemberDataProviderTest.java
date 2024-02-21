@@ -3,15 +3,21 @@ package com.example.gymbuddy.implementation.daos;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.repositories.MemberRepository;
 import com.example.gymbuddy.infrastructure.entities.Member;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,10 +45,10 @@ public class MemberDataProviderTest {
         var members = List.of(new Member());
         var memberDtos = List.of(MemberDto.builder().build());
 
-        when(memberRepository.findAll()).thenReturn(members);
+        when(memberRepository.findAll(ArgumentMatchers.<Specification<Member>>any(), any(Pageable.class))).thenReturn(new PageImpl<>(members));
 
-        assertEquals(memberDtos, memberDataProvider.findAll());
-        verify(memberRepository).findAll();
+        assertEquals(memberDtos, memberDataProvider.findAll(PageRequest.build(0, 1 , Collections.emptyMap(), Collections.emptyMap())));
+        verify(memberRepository).findAll(ArgumentMatchers.<Specification<Member>>any(), any(Pageable.class));
         verify(modelMapper).map(eq(members.get(0)), eq(MemberDto.class));
     }
 
