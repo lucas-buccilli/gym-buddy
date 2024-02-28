@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.daos;
 import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.infrastructure.daos.IMachineDao;
 import com.example.gymbuddy.infrastructure.entities.Machine;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,8 +19,8 @@ public class MachineDao implements IMachineDao {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<MachineDto> findAll() {
-        return machineRepository.findAll().stream()
+    public List<MachineDto> findAll(PageRequest pageRequest) {
+        return machineRepository.findAll(pageRequest.toSpecification(), pageRequest.toPageable()).stream()
                 .map(machineEntity -> modelMapper.map(machineEntity, MachineDto.class))
                 .toList();
     }

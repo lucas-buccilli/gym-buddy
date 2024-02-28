@@ -1,6 +1,8 @@
 package com.example.gymbuddy.infrastructure.entities;
 
 import com.example.gymbuddy.implementation.converters.DateTimeConverter;
+import com.example.gymbuddy.infrastructure.models.Filterable;
+import com.example.gymbuddy.infrastructure.models.Sortable;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -21,15 +23,23 @@ public class MachineHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Sortable
+    @Filterable
     @Column(name = "number_reps")
     private Integer numberReps;
 
+    @Sortable
+    @Filterable
     @Column(name = "max_weight")
     private Integer maxWeight;
 
+    @Sortable
+    @Filterable
     @Column(name = "number_sets")
     private Integer numberSets;
 
+    @Sortable
+    @Filterable
     @Column(name = "workout_date")
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime workoutDate;

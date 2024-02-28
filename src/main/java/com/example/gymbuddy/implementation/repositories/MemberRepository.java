@@ -11,3 +11,4 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpecificationExecutor<Member> {
     Optional<Member> findByAuthId(String authId);
 }
+

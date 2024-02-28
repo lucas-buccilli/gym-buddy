@@ -2,6 +2,7 @@ package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.implementation.validators.requests.PaginatedRequestValidator;
+import com.example.gymbuddy.infrastructure.entities.Member;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
@@ -35,7 +36,7 @@ public class MemberController  {
     @EnforceRls(noMemberParameter = true)
     @PostMapping(path = "/search")
     public ResponseEntity<List<MemberDto>> find(@Valid @RequestBody PageRequest pageRequest) {
-        var errors = PaginatedRequestValidator.isValid(pageRequest, MemberDto.class);
+        var errors = PaginatedRequestValidator.isValid(pageRequest, Member.class);
         if(!errors.isEmpty()) {
             throw new InvalidRequestException(errors);
         }

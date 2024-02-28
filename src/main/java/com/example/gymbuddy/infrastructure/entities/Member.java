@@ -1,5 +1,7 @@
 package com.example.gymbuddy.infrastructure.entities;
 
+import com.example.gymbuddy.infrastructure.models.Filterable;
+import com.example.gymbuddy.infrastructure.models.Sortable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,12 +16,18 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Sortable
+    @Filterable
     @Column(name = "first_name")
     private String firstName;
 
+    @Sortable
+    @Filterable
     @Column(name = "last_name")
     private String lastName;
 
+    @Sortable
+    @Filterable
     @Column(name = "phone_number")
     private String phoneNumber;
 
