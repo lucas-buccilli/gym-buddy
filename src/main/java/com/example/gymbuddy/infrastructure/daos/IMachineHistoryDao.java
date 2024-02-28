@@ -1,5 +1,6 @@
 package com.example.gymbuddy.infrastructure.daos;
 
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 
 import java.time.LocalDateTime;
@@ -8,11 +9,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface IMachineHistoryDao {
-    List<MachineHistoryDto> findAll();
 
     MachineHistoryDto addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDto machineHistoryDao);
 
-    List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, LocalDateTime workoutDate);
+    List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, PageRequest pageRequest);
 
     Optional<MachineHistoryDto> findLatestWorkout(Integer memberId, Integer machineId);
 

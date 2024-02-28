@@ -2,7 +2,10 @@ package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.aop.EnforceRls;
 import com.example.gymbuddy.implementation.validators.requests.MachineHistoryRequestValidator;
+import com.example.gymbuddy.implementation.validators.requests.PaginatedRequestValidator;
+import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
 import jakarta.validation.Valid;
@@ -30,14 +33,17 @@ public class MachineHistoryController {
     private final IMachineHistoryService machineHistoryService;
     private final MachineHistoryRequestValidator validator;
 
-    @GetMapping
+    @PostMapping(path = "/search")
     @PreAuthorize("hasPermission('machine-histories', 'read') or hasRole('Admin')")
     @EnforceRls(memberIdParameterName = "memberId")
     public ResponseEntity<List<MachineHistoryDto>> getHistory(@PathVariable(name = "member_id") int memberId,
                                                               @PathVariable(name = "machine_id") int machineId,
-                                                              @Nullable
-                                                              @RequestParam(name = "workout_date", required=false) LocalDateTime workoutDate) {
-        return ResponseEntity.ok(machineHistoryService.findBy(memberId, machineId, workoutDate));
+                                                              @Valid @RequestBody PageRequest pageRequest) {
+        var errors = PaginatedRequestValidator.isValid(pageRequest, MachineHistory.class);
+        if(!errors.isEmpty()) {
+            throw new InvalidRequestException(errors);
+        }
+        return ResponseEntity.ok(machineHistoryService.findBy(memberId, machineId, pageRequest));
     }
 
     @PostMapping

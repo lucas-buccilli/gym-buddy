@@ -81,7 +81,8 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(pageRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("[Invalid sort field {IncorrectField}, Invalid filter field {IncorrectField}]"));
+                .andExpect(jsonPath("$.message")
+                        .value("[Invalid sort field {IncorrectField}, expecting these options: firstName, lastName, phoneNumber, Invalid filter field {IncorrectField}, expecting these options: firstName, lastName, phoneNumber]"));
     }
 
 

@@ -4,16 +4,17 @@ import com.example.gymbuddy.implementation.database.specificationBuilders.Specif
 import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository;
 import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,13 +30,6 @@ public class MachineHistoryDao implements IMachineHistoryDao {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<MachineHistoryDto> findAll() {
-        return machineHistoryRepository.findAll().stream()
-                .map(machineHistoryEntity -> modelMapper.map(machineHistoryEntity, MachineHistoryDto.class))
-                .toList();
-    }
-
-    @Override
     public MachineHistoryDto addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDto machineHistoryDao) {
         machineHistoryDao.setMachineId(machineId);
         machineHistoryDao.setMemberId(memberId);
@@ -44,14 +38,13 @@ public class MachineHistoryDao implements IMachineHistoryDao {
     }
 
     @Override
-    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, @Nullable LocalDateTime workoutDate) {
-        var builder = new SpecificationBuilder<MachineHistory>()
+    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, PageRequest pageRequest) {
+        var specification = new SpecificationBuilder<MachineHistory>()
                 .hasNestedField("machine", "machineId", machineId)
-                .hasNestedField("member", "memberId", memberId);
-        if (Objects.nonNull(workoutDate)) {
-            builder.hasField("workoutDate", workoutDate);
-        }
-        var histories = machineHistoryRepository.findAll(builder.build());
+                .hasNestedField("member", "memberId", memberId)
+                .build()
+                .and(pageRequest.toSpecification());
+        var histories = machineHistoryRepository.findAll(specification, pageRequest.toPageable());
         return histories.stream()
                 .map(machineHistory -> modelMapper.map(machineHistory, MachineHistoryDto.class))
                 .toList();
