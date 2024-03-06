@@ -25,7 +25,7 @@ public class MemberRequests {
         @NotNull
         String phoneNumber;
         @NotNull
-        @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$", message = "The phone number must be valid.")
+        @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "The email address must be valid.")
         String email;
         @NotNull
         String password;
