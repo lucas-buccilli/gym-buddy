@@ -1,12 +1,16 @@
 package com.example.gymbuddy.integration;
 
 
+import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,15 +20,22 @@ public class UserReportIntegrationTest extends IntegrationBase{
 
     @Test
     void generateUserReport() throws Exception {
-        var bob =  Member.create(
-                MemberDto.builder()
-                    .firstName("Bob")
-                    .lastName("TestLast")
-                    .phoneNumber("0000000000")
-                    .authId(UUID.randomUUID().toString())
-                    .build(),
-                Admin
-        );
+
+        var bobAddRequest = MemberRequests.AddRequest.builder()
+                .firstName("Bob")
+                .lastName("TestLast")
+                .phoneNumber("0000000000")
+                .email("emai@email.com")
+                .password("password1234!")
+                .roles(List.of(AuthRoles.MEMBER))
+                .build();
+
+        AuthServiceStubber.builder(authService)
+                .createUser()
+                    .when(bobAddRequest.getEmail(), bobAddRequest.getPassword())
+                    .thenReturn(RandomStringUtils.randomAlphabetic(5));
+
+        var bob =  Member.create(bobAddRequest, Admin);
 
         var treadmill = Machine.create(
                 MachineDto.builder()

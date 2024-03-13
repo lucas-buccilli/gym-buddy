@@ -3,9 +3,11 @@ package com.example.gymbuddy.implementation.controllers;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.implementation.utils.AuthUtils;
+import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.models.enums.SortOptions;
+import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -89,12 +91,14 @@ class MemberControllerTest {
     @Test
     public void shouldAddMember() throws Exception {
         var memberDto = MemberDto.builder()
-                .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").authId("1111111").build();
-        when(memberService.addMember(any())).thenReturn(memberDto);
+                .firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000").build();
+        var addRequest = MemberRequests.AddRequest.builder().firstName("TestFirst").lastName("TestLast").phoneNumber("0000000000")
+                .email("email@test.com").password("password").roles(List.of(AuthRoles.MEMBER)).build();
+        when(memberService.addMember(any(), any(), any(), any())).thenReturn(memberDto);
 
         mockMvc.perform(post("/members").with(AuthUtils.generateAuth0Admin("1"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(memberDto)))
+                .content(objectMapper.writeValueAsString(addRequest)))
                 .andDo(print())
                 .andExpect(status().is(201))
                 .andExpect(content().string(objectMapper.writeValueAsString(memberDto)));
