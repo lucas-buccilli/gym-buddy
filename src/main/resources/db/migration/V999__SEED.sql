@@ -1,2 +1,2 @@
-INSERT INTO member (first_name, last_name, phone_number, auth_id) values ('admin', 'smith', '9999999999', 'auth0|65ba7aba929d32745e924fe6');
-INSERT INTO member (first_name, last_name, phone_number, auth_id) values ('member', 'smith', '9999999999', 'auth0|65baaeaa929d32745e929360');
+INSERT INTO member (first_name, last_name, phone_number, auth_id, email) values ('admin', 'smith', '9999999999', 'auth0|65ba7aba929d32745e924fe6', 'admin.smith@email.com');
+INSERT INTO member (first_name, last_name, phone_number, auth_id, email) values ('member', 'smith', '9999999999', 'auth0|65baaeaa929d32745e929360', 'member.smith@email.com');
