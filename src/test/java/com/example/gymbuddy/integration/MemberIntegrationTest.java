@@ -1,18 +1,22 @@
 package com.example.gymbuddy.integration;
 
+import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.models.enums.SortOptions;
+import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class MemberIntegrationTest extends IntegrationBase{
+public class MemberIntegrationTest extends IntegrationBase {
 
     @Test
     public void shouldDeleteExistingMember() throws Exception {
@@ -42,29 +46,47 @@ public class MemberIntegrationTest extends IntegrationBase{
 
     @Test
     public void shouldSearchMembers() throws Exception {
-        Member.create(MemberDto.builder()
+        var member1 = MemberRequests.AddRequest.builder()
                 .firstName("Bob")
                 .lastName("23")
                 .phoneNumber("3674647392")
-                .authId(UUID.randomUUID().toString())
-                .build(),
-                Admin);
+                .email("emai@email.com")
+                .password("password1234!")
+                .roles(List.of(AuthRoles.MEMBER))
+                .build();
 
-        Member.create(MemberDto.builder()
-                        .firstName("Bob")
-                        .lastName("23")
-                        .phoneNumber("3674747392")
-                        .authId(UUID.randomUUID().toString())
-                        .build(),
-                Admin);
+        var member2 = MemberRequests.AddRequest.builder()
+                .firstName("Bob")
+                .lastName("23")
+                .phoneNumber("3674747392")
+                .email("emai@email.com")
+                .password("password1234!")
+                .roles(List.of(AuthRoles.MEMBER))
+                .build();
 
-        Member.create(MemberDto.builder()
-                        .firstName("Bob3")
-                        .lastName("23")
-                        .phoneNumber("3674747395")
-                        .authId(UUID.randomUUID().toString())
-                        .build(),
-                Admin);
+        var member3 = MemberRequests.AddRequest.builder()
+                .firstName("Bob3")
+                .lastName("23")
+                .phoneNumber("3674747395")
+                .email("emai@email.com")
+                .password("password1234!")
+                .roles(List.of(AuthRoles.MEMBER))
+                .build();
+
+        AuthServiceStubber.builder(authService)
+                        .createUser()
+                                .when(member1.getEmail(), member1.getPassword())
+                                .thenReturn(RandomStringUtils.randomAlphabetic(5))
+                        .createUser()
+                            .when(member2.getEmail(), member2.getPassword())
+                            .thenReturn(RandomStringUtils.randomAlphabetic(5))
+                        .createUser()
+                            .when(member3.getEmail(), member3.getPassword())
+                            .thenReturn(RandomStringUtils.randomAlphabetic(5));
+
+        Member.create(member1, Admin);
+        Member.create(member2, Admin);
+        Member.create(member3, Admin);
 
         var searchResults = Member.search(PageRequest.build(
                 0,

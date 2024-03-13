@@ -48,7 +48,7 @@ public class MemberController  {
     @PostMapping
     public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) throws AuthCreationException {
         var dto = modelMapper.map(addRequest, MemberDto.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dto, addRequest.getEmail(), addRequest.getPassword()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dto, addRequest.getEmail(), addRequest.getPassword(), addRequest.getRoles()));
     }
 
     @PreAuthorize("hasPermission('members', 'delete') or hasRole('Admin')")

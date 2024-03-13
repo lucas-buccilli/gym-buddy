@@ -1,9 +1,13 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
+import com.example.gymbuddy.infrastructure.exceptions.AuthCreationException;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
+import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.enums.Roles;
+import com.example.gymbuddy.infrastructure.services.IAuthService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,6 +32,9 @@ public class MemberServiceTest {
     @Mock
     IMemberDao memberDataProvider;
 
+    @Mock
+    IAuthService authService;
+
     @InjectMocks
     MemberService memberService;
 
@@ -44,15 +51,20 @@ public class MemberServiceTest {
     }
 
     @Test
-    void addMember() {
+    void addMember() throws AuthCreationException {
         var memberDto = MemberDto.builder().firstName("Sam").build();
+        String userId = "userid";
 
+        when(authService.createUser(any(), any())).thenReturn(userId);
         when(memberDataProvider.saveMember(any())).thenReturn(memberDto);
 
-        var result = memberService.addMember(memberDto);
+        var result = memberService.addMember(memberDto, "smith@email.com", "password", List.of(AuthRoles.MEMBER));
         assertEquals(memberDto, result);
         verify(memberDataProvider).saveMember(memberDto);
         assertEquals("Sam", result.getFirstName());
+        assertEquals(userId, memberDto.getAuthId());
+        verify(authService).createUser("smith@email.com", "password");
+        verify(authService).addRole(userId, List.of(AuthRoles.MEMBER));
     }
 
     @Test

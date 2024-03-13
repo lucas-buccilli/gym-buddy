@@ -4,8 +4,10 @@ import com.example.gymbuddy.implementation.patchers.MemberPatcher;
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.exceptions.AuthCreationException;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
+import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
+import com.example.gymbuddy.infrastructure.models.enums.Roles;
 import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 import com.example.gymbuddy.infrastructure.services.IAuthService;
 import com.example.gymbuddy.infrastructure.services.IMemberService;
@@ -27,8 +29,9 @@ public class MemberService implements IMemberService {
     }
 
     @Override
-    public MemberDto addMember(MemberDto memberDto, String email, String password) throws AuthCreationException {
+    public MemberDto addMember(MemberDto memberDto, String email, String password, List<AuthRoles> roles) throws AuthCreationException {
         var userId = authService.createUser(email, password);
+        authService.addRole(userId, roles);
         memberDto.setAuthId(userId);
         return memberDataProvider.saveMember(memberDto);
     }

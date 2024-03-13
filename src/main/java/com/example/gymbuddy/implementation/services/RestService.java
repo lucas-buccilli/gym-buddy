@@ -12,10 +12,17 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class RestService {
     private final RestTemplate restTemplate;
-    public <T> T post(String url, Object body, MultiValueMap<String, String> headers, Class<T> clazz) throws JsonProcessingException {
+    public <T, K> T post(String url, K body, MultiValueMap<String, String> headers, Class<T> clazz) throws JsonProcessingException {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.addAll(headers);
-        HttpEntity<Object> entity = new HttpEntity<>(body, httpHeaders);
+        HttpEntity<K> entity = new HttpEntity<>(body, httpHeaders);
         return restTemplate.postForObject(url, entity, clazz);
+    }
+
+    public <K> void post(String url, K body, MultiValueMap<String, String> headers) throws JsonProcessingException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.addAll(headers);
+        HttpEntity<K> entity = new HttpEntity<>(body, httpHeaders);
+        restTemplate.postForEntity(url, entity, Void.class);
     }
 }

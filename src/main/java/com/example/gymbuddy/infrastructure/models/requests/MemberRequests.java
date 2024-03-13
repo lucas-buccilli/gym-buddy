@@ -1,12 +1,19 @@
 package com.example.gymbuddy.infrastructure.models.requests;
 
+import com.example.gymbuddy.infrastructure.models.AuthRoles;
+import com.example.gymbuddy.infrastructure.models.enums.Roles;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
+
+import java.util.List;
 
 public class MemberRequests {
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AddRequest {
         @Size(max = 50, message = "The length of first name must be between less than 50 characters.")
         @NotNull
@@ -21,7 +28,8 @@ public class MemberRequests {
         String email;
         @NotNull
         String password;
-
+        @NotNull
+        List<AuthRoles> roles;
     }
 
     @Data

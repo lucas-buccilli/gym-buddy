@@ -12,6 +12,10 @@ services:
     environment:
       SPRING_FLYWAY_URL: jdbc:mysql://db:3306/gymbuddy
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gymbuddy?allowPublicKeyRetrieval=true
+      AUTH0_CLIENT_ID: ZShZCT5STJSLxolYlZ6sgJiHcRXxKbLa
+      AUTH0_CLIENT_SECRET: QveWVdl_fCO9PiOmYv3hJbyPaaWjqx5oe9KfB8dA5QNYo2LqW5mM90L6IJQ9sYKU
+      AUTH0_AUDIANCE: https://dev-smtjhvt04ywhqy3i.us.auth0.com/api/v2/
+      AUTH0_DOMAIN: https://dev-smtjhvt04ywhqy3i.us.auth0.com
 
   db:
     image: mysql

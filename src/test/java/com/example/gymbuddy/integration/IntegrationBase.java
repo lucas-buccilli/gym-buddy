@@ -1,6 +1,7 @@
 package com.example.gymbuddy.integration;
 
 import com.example.gymbuddy.implementation.utils.AuthUtils;
+import com.example.gymbuddy.implementation.values.Auth0Values;
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
@@ -9,10 +10,13 @@ import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
+import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
+import com.example.gymbuddy.infrastructure.services.IAuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,6 +50,11 @@ public abstract class IntegrationBase {
     private TestDataManager testDataManager;
     @Autowired
     private IMemberDao memberDao;
+    @MockBean
+    IAuthService authService;
+    @MockBean
+    Auth0Values auth0Values;
+
     public final Member Member = new Member();
     public final Machine Machine = new Machine();
     public final Reports Reports = new Reports();
@@ -62,10 +71,10 @@ public abstract class IntegrationBase {
     }
 
     public class Member {
-        public MemberDto create(MemberDto memberDao, AuthenticatedUser authenticatedUser) throws Exception {
+        public MemberDto create(MemberRequests.AddRequest addRequest, AuthenticatedUser authenticatedUser) throws Exception {
             var result = mvc.perform(post("/members").with(getAuthUser(authenticatedUser))
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(memberDao)))
+                            .content(objectMapper.writeValueAsString(addRequest)))
                     .andExpect(status().isCreated())
                     .andReturn();
 
@@ -75,10 +84,23 @@ public abstract class IntegrationBase {
         public MemberDto create(AuthenticatedUser authenticatedUser) {
             String firstName = RandomStringUtils.randomAlphabetic(6);
             String lastName = RandomStringUtils.randomAlphabetic(6);
-            String auth0Id = "Auth" + RandomStringUtils.randomAlphabetic(6);
             String phoneNumber = "9999999999";
+            String email = RandomStringUtils.randomAlphabetic(6) + "@email.com";
+            String password = RandomStringUtils.randomAlphabetic(6);
+            String authId = RandomStringUtils.randomAlphabetic(6);
+            MemberRequests.AddRequest addRequest = new MemberRequests.AddRequest();
+            addRequest.setFirstName(firstName);
+            addRequest.setLastName(lastName);
+            addRequest.setPhoneNumber(phoneNumber);
+            addRequest.setEmail(email);
+            addRequest.setPassword(password);
+            addRequest.setRoles(authenticatedUser.roles);
+            AuthServiceStubber.builder(authService)
+                    .createUser()
+                        .when(email, password)
+                        .thenReturn(authId);
             try {
-                return create(MemberDto.builder().firstName(firstName).lastName(lastName).phoneNumber(phoneNumber).authId(auth0Id).build(), authenticatedUser);
+                return create(addRequest, authenticatedUser);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
