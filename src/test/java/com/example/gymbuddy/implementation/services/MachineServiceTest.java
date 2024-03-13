@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.services;
 import com.example.gymbuddy.infrastructure.daos.IMachineDao;
 import com.example.gymbuddy.infrastructure.exceptions.AlreadyExistsException;
 import com.example.gymbuddy.infrastructure.exceptions.MachineNotFoundException;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,12 +35,12 @@ class MachineServiceTest {
     @Test
     void findAll() {
         var machineDaos = List.of(new MachineDto());
-        when(machineDataProvider.findAll()).thenReturn(machineDaos);
+        when(machineDataProvider.findAll(any())).thenReturn(machineDaos);
         //when
-        var result = machineService.findAll();
+        var result = machineService.findAll(new PageRequest());
         //then
         assertEquals(machineDaos, result);
-        verify(machineDataProvider).findAll();
+        verify(machineDataProvider).findAll(any());
     }
 
     @Test

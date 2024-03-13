@@ -4,6 +4,7 @@ import com.example.gymbuddy.implementation.repositories.MachineHistoryRepository
 import com.example.gymbuddy.infrastructure.entities.Machine;
 import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.integration.EntityGenerator;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -41,16 +44,6 @@ public class MachineHistoryDataProviderTest {
     private MachineHistoryRepository machineHistoryRepository;
     @Spy
     private ModelMapper modelMapper;
-    @Test
-    void findAll() {
-        var machineHistoryDtoList = List.of(MachineHistoryDto.builder().build());
-        var machineHistoryList = List.of(new MachineHistory());
-
-        when(machineHistoryRepository.findAll()).thenReturn(machineHistoryList);
-        assertEquals(machineHistoryDtoList, machineHistoryDataProvider.findAll());
-        verify(machineHistoryRepository).findAll();
-        verify(modelMapper).map(eq(machineHistoryList.get(0)), eq(MachineHistoryDto.class));
-    }
 
     @Test
     void addMachineHistory() {
@@ -72,38 +65,15 @@ public class MachineHistoryDataProviderTest {
         machineHistory.setMachine(machine);
         var histories = List.of(machineHistory);
 
-        when(machineHistoryRepository.findAll(ArgumentMatchers.<Specification<MachineHistory>>any())).thenReturn(histories);
-        var results = machineHistoryDataProvider.findBy(1, 1, LocalDateTime.now());
+        when(machineHistoryRepository.findAll(ArgumentMatchers.<Specification<MachineHistory>>any(), ArgumentMatchers.<Pageable>any())).thenReturn(new PageImpl<>(histories));
+        var results = machineHistoryDataProvider.findBy(1, 1, PageRequest.build(1, 1, Map.of(), Map.of()));
         assertNotNull(results);
         assertEquals(1, results.size());
         assertNotNull(results.get(0));
         assertEquals(machineHistory.getMember().getId(), results.get(0).getMemberId());
         assertEquals(machineHistory.getMachine().getId(), results.get(0).getMachineId());
         assertEquals(machineHistory.getWorkoutDate(), results.get(0).getWorkoutDate());
-        verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any());
-        verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDto.class));
-    }
-
-    @Test
-    void findByWorkoutDateNull() {
-        Member member = new Member();
-        Machine machine = new Machine();
-        member.setId(1);
-        machine.setId(1);
-        MachineHistory machineHistory = new MachineHistory();
-        machineHistory.setMember(member);
-        machineHistory.setMachine(machine);
-        var histories = List.of(machineHistory);
-
-        when(machineHistoryRepository.findAll(ArgumentMatchers.<Specification<MachineHistory>>any())).thenReturn(histories);
-        var results = machineHistoryDataProvider.findBy(1, 1, null);
-        assertNotNull(results);
-        assertEquals(1, results.size());
-        assertNotNull(results.get(0));
-        assertEquals(machineHistory.getMember().getId(), results.get(0).getMemberId());
-        assertEquals(machineHistory.getMachine().getId(), results.get(0).getMachineId());
-        assertEquals(machineHistory.getWorkoutDate(), results.get(0).getWorkoutDate());
-        verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any());
+        verify(machineHistoryRepository).findAll(ArgumentMatchers.<Specification<MachineHistory>>any(), ArgumentMatchers.<Pageable>any());
         verify(modelMapper).map(eq(histories.get(0)), eq(MachineHistoryDto.class));
     }
 

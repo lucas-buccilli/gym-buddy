@@ -3,6 +3,7 @@ package com.example.gymbuddy.implementation.controllers;
 import com.example.gymbuddy.implementation.configurations.ModelMapperConfig;
 import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.implementation.utils.AuthUtils;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -41,13 +43,33 @@ class MachineControllerTest {
     @Test
     public void shouldReturnAllMachines() throws Exception {
         var machine = MachineDto.builder().name("name123").build();
-        when(machineService.findAll()).thenReturn(List.of(machine));
+        var pageRequest = PageRequest.build(0, 100, Map.of(), Map.of());
+        when(machineService.findAll(any())).thenReturn(List.of(machine));
 
-        mockMvc.perform(get("/machines")
-                .with(AuthUtils.generateAuth0Admin("1")))
+        mockMvc.perform(post("/machines/search")
+                .with(AuthUtils.generateAuth0Admin("1"))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(pageRequest))
+                )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(machine.getName()));
+    }
+
+    @Test
+    public void shouldThrowBadRequestWhenFieldsAreInvalid() throws Exception {
+        var machine = MachineDto.builder().name("name123").build();
+        var pageRequest = PageRequest.build(0, 100, Map.of(), Map.of("InvalidField", "value"));
+        when(machineService.findAll(any())).thenReturn(List.of(machine));
+
+        mockMvc.perform(post("/machines/search")
+                        .with(AuthUtils.generateAuth0Admin("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pageRequest))
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Invalid Request Exception"));
     }
 
     @Test

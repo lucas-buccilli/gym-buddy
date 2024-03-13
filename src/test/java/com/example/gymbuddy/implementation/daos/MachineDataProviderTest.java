@@ -2,16 +2,23 @@ package com.example.gymbuddy.implementation.daos;
 
 import com.example.gymbuddy.implementation.repositories.MachineRepository;
 import com.example.gymbuddy.infrastructure.entities.Machine;
+import com.example.gymbuddy.infrastructure.entities.MachineHistory;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,9 +45,9 @@ public class MachineDataProviderTest {
         var machines = List.of(new Machine());
         var machineDtos = List.of(MachineDto.builder().build());
 
-        when(machineRepository.findAll()).thenReturn(machines);
-        assertEquals(machineDtos, machineDataProvider.findAll());
-        verify(machineRepository).findAll();
+        when(machineRepository.findAll(ArgumentMatchers.<Specification<Machine>>any(), ArgumentMatchers.<Pageable>any())).thenReturn(new PageImpl<>(machines));
+        assertEquals(machineDtos, machineDataProvider.findAll(PageRequest.build(0, 10, Map.of(), Map.of())));
+        verify(machineRepository).findAll(ArgumentMatchers.<Specification<Machine>>any(), ArgumentMatchers.<Pageable>any());
         verify(modelMapper).map(eq(machines.get(0)), eq(MachineDto.class));
     }
 

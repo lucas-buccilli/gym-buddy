@@ -3,7 +3,9 @@ package com.example.gymbuddy.implementation.controllers;
 import com.example.gymbuddy.implementation.utils.AuthUtils;
 import com.example.gymbuddy.implementation.configurations.SecurityConfig;
 import com.example.gymbuddy.implementation.validators.requests.MachineHistoryRequestValidator;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
+import com.example.gymbuddy.infrastructure.models.enums.SortOptions;
 import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
 import com.example.gymbuddy.infrastructure.validation.ValidationError;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,10 +96,13 @@ class MachineHistoryControllerTest {
         var machineHistoryDto = MachineHistoryDto.builder()
                 .memberId(1).machineId(2).workoutDate(LocalDateTime.now()).build();
         var machineHistoryList = List.of(machineHistoryDto);
+        var pageRequest = PageRequest.build(0, 10, Map.of("workoutDate", SortOptions.ASC), Map.of());
         when(machineHistoryService.findBy(anyInt(), anyInt(), any())).thenReturn(machineHistoryList);
 
-        var result = mockMvc.perform(get("/members/1/machines/2/history")
-                        .with(AuthUtils.generateAuth0Admin("1")))
+        var result = mockMvc.perform(post("/members/1/machines/2/history/search")
+                        .with(AuthUtils.generateAuth0Admin("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pageRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].memberId").value(machineHistoryDto.getMemberId()))
@@ -106,6 +112,23 @@ class MachineHistoryControllerTest {
         LocalDateTime actualWorkoutDate = LocalDateTime.parse(JsonPath.read(result.getResponse().getContentAsString(),
                 "$[0].workoutDate"));
         assertEquals(machineHistoryDto.getWorkoutDate(), actualWorkoutDate);
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenPageRequestContainsInvalidFields() throws Exception {
+        var machineHistoryDto = MachineHistoryDto.builder()
+                .memberId(1).machineId(2).workoutDate(LocalDateTime.now()).build();
+        var machineHistoryList = List.of(machineHistoryDto);
+        var pageRequest = PageRequest.build(0, 10, Map.of(), Map.of("Random", "value"));
+        when(machineHistoryService.findBy(anyInt(), anyInt(), any())).thenReturn(machineHistoryList);
+
+        mockMvc.perform(post("/members/1/machines/2/history/search")
+                        .with(AuthUtils.generateAuth0Admin("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pageRequest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Invalid Request Exception"));
     }
 
     @Test

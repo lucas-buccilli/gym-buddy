@@ -25,16 +25,6 @@ class MachineHistoryServiceTest {
     @Mock
     private IMachineHistoryDao machineHistoryDataProvider;
 
-
-    @Test
-    void findAll() {
-        List<MachineHistoryDto> machineHistoryDaos = List.of(new MachineHistoryDto());
-        when(machineHistoryDataProvider.findAll()).thenReturn(machineHistoryDaos);
-        var results = machineHistoryService.findAll();
-        assertEquals(machineHistoryDaos, results);
-        verify(machineHistoryDataProvider).findAll();
-    }
-
     @Test
     void addMachineHistory() {
         var memberId = 1;

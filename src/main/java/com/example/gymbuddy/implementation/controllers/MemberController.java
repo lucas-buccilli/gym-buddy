@@ -36,7 +36,7 @@ public class MemberController  {
     @EnforceRls(noMemberParameter = true)
     @PostMapping(path = "/search")
     public ResponseEntity<List<MemberDto>> find(@Valid @RequestBody PageRequest pageRequest) {
-        var errors = PaginatedRequestValidator.isValid(pageRequest, MemberDto.class);
+        var errors = PaginatedRequestValidator.isValid(pageRequest, Member.class);
         if(!errors.isEmpty()) {
             throw new InvalidRequestException(errors);
         }

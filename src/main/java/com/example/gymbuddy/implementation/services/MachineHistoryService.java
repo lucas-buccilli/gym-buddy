@@ -1,6 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.daos.IMachineHistoryDao;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineHistoryDto;
 import com.example.gymbuddy.infrastructure.services.IMachineHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,10 @@ import java.util.Optional;
 public class MachineHistoryService implements IMachineHistoryService {
     private final IMachineHistoryDao machineHistoryDataProvider;
 
-    @Override
-    public List<MachineHistoryDto> findAll() {
-        return machineHistoryDataProvider.findAll();
-    }
+//    @Override
+//    public List<MachineHistoryDto> findAll(PageRequest pageRequest) {
+//        return machineHistoryDataProvider.findAll(pageRequest);
+//    }
 
     @Override
     public MachineHistoryDto addMachineHistory(Integer memberId, Integer machineId, MachineHistoryDto machineHistoryDao) {
@@ -27,8 +28,8 @@ public class MachineHistoryService implements IMachineHistoryService {
     }
 
     @Override
-    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, @Nullable LocalDateTime workoutDate) {
-       return machineHistoryDataProvider.findBy(memberId, machineId, workoutDate);
+    public List<MachineHistoryDto> findBy(Integer memberId, Integer machineId, PageRequest pageRequest) {
+       return machineHistoryDataProvider.findBy(memberId, machineId, pageRequest);
     }
 
     @Override

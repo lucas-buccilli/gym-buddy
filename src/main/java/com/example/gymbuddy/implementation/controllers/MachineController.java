@@ -1,6 +1,10 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.aop.EnforceRls;
+import com.example.gymbuddy.implementation.validators.requests.PaginatedRequestValidator;
+import com.example.gymbuddy.infrastructure.entities.Machine;
+import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
+import com.example.gymbuddy.infrastructure.models.PageRequest;
 import com.example.gymbuddy.infrastructure.models.dtos.MachineDto;
 import com.example.gymbuddy.infrastructure.services.IMachineService;
 import jakarta.validation.Valid;
@@ -29,11 +33,16 @@ public class MachineController {
     private final IMachineService machineService;
     private final ModelMapper modelMapper;
 
-    @GetMapping
+    @PostMapping(path = "/search")
     @PreAuthorize("hasPermission('machines', 'read') or hasRole('Admin')")
     @EnforceRls(noMemberParameter = true)
-    public ResponseEntity<List<MachineDto>> findAll() {
-        return ResponseEntity.ok(machineService.findAll());
+    public ResponseEntity<List<MachineDto>> findAll(@Valid @RequestBody PageRequest pageRequest) {
+        var errors = PaginatedRequestValidator.isValid(pageRequest, Machine.class);
+        if(!errors.isEmpty()) {
+            throw new InvalidRequestException(errors);
+        }
+        return ResponseEntity.ok(machineService.findAll(pageRequest));
+
     }
 
     @PostMapping
