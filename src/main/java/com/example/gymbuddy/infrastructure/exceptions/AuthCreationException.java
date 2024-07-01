@@ -1,9 +1,7 @@
 package com.example.gymbuddy.infrastructure.exceptions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-public class AuthCreationException extends Exception{
-    public AuthCreationException(JsonProcessingException e) {
+public class AuthCreationException extends AuthApiException{
+    public AuthCreationException(Exception e) {
         super(e);
     }
 }

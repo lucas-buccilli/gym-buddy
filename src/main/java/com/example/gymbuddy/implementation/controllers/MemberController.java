@@ -1,8 +1,11 @@
 package com.example.gymbuddy.implementation.controllers;
 
 import com.example.gymbuddy.implementation.aop.EnforceRls;
+import com.example.gymbuddy.implementation.validators.requests.MemberRequestValidator;
 import com.example.gymbuddy.implementation.validators.requests.PaginatedRequestValidator;
+import com.example.gymbuddy.infrastructure.entities.MachineHistory;
 import com.example.gymbuddy.infrastructure.entities.Member;
+import com.example.gymbuddy.infrastructure.exceptions.AuthApiException;
 import com.example.gymbuddy.infrastructure.exceptions.AuthCreationException;
 import com.example.gymbuddy.infrastructure.exceptions.InvalidRequestException;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
@@ -32,6 +35,7 @@ import java.util.List;
 public class MemberController  {
     private final IMemberService memberService;
     private final ModelMapper modelMapper;
+    private final MemberRequestValidator memberRequestValidator;
 
     @PreAuthorize("hasRole('Admin')")
     @EnforceRls(noMemberParameter = true)
@@ -47,7 +51,11 @@ public class MemberController  {
     @PreAuthorize("hasPermission('members', 'create') or hasRole('Admin')")
     @EnforceRls(noMemberParameter = true)
     @PostMapping
-    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) throws AuthCreationException {
+    public ResponseEntity<MemberDto> addMember(@Valid @RequestBody MemberRequests.AddRequest addRequest) throws AuthApiException {
+        var errors = memberRequestValidator.validate(addRequest);
+        if(!errors.isEmpty()) {
+            throw new InvalidRequestException(errors);
+        }
         var dto = modelMapper.map(addRequest, MemberDto.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.addMember(dto, addRequest.getEmail(), addRequest.getPassword(), addRequest.getRoles()));
     }

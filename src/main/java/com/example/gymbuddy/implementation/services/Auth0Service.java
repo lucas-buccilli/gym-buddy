@@ -7,13 +7,24 @@ import com.example.gymbuddy.infrastructure.services.IAuthService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,28 +37,59 @@ public class Auth0Service implements IAuthService {
 
     @Override
     public String createUser(String email, String password) throws AuthCreationException {
-        try {
-            var accessToken = getAccessToken();
-            var header = CollectionUtils.toMultiValueMap(Map.of("Authorization", List.of("Bearer " + accessToken)));
-            return restService.post(values.getDomain() + "/api/v2/users", new CreateUserRequest("Username-Password-Authentication", email, password), header, CreateUserResponse.class).user_id;
-        } catch (JsonProcessingException e) {
-            throw new AuthCreationException(e);
-        }
+        AuthFunction<MultiValueMap<String, String>, String> function = (headers) -> restService.post(values.getDomain() + "/api/v2/users", new CreateUserRequest("Username-Password-Authentication", email, password), headers, CreateUserResponse.class).user_id;
+        return sendAuthorizedRequest(function);
     }
 
     @Override
     public void addRole(String authId, List<AuthRoles> roles) throws AuthCreationException {
-        try {
-            var accessToken = getAccessToken();
-            var header = CollectionUtils.toMultiValueMap(Map.of("Authorization", List.of("Bearer " + accessToken)));
-            restService.post(values.getDomain() + "/api/v2/users/" + authId + "/roles", new AddRolesRequest(roles.stream().map(roleMap::get).collect(Collectors.toSet())), header);
-        } catch (JsonProcessingException e) {
-            throw new AuthCreationException(e);
-        }
+        AuthSupplier<MultiValueMap<String, String>> supplier = (headers) -> restService.post(values.getDomain() + "/api/v2/users/" + authId + "/roles", new AddRolesRequest(roles.stream().map(roleMap::get).collect(Collectors.toSet())), headers);
+        sendAuthorizedRequest(supplier);
+    }
+
+    @Override
+    public List<Object> searchUsersByEmail(String email) throws AuthCreationException {
+        AuthFunction<MultiValueMap<String, String>, List<Object>> function = new AuthFunction<MultiValueMap<String, String>, List<Object>>() {
+            @Override
+            public List<Object> apply(MultiValueMap<String, String> headers) throws URISyntaxException, JsonProcessingException {
+                return List.of(restService.get(new URI(values.getDomain() + "/api/v2/users-by-email?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8)), headers, Object[].class));
+            }
+        };
+        return sendAuthorizedRequest(function);
     }
 
     private String getAccessToken() throws JsonProcessingException {
         return restService.post(values.getDomain() + "/oauth/token", new TokenRequest(values.getClientId(), values.getClientSecret(), values.getAudiance(), "client_credentials"), new HttpHeaders(), TokenResponse.class).accessToken;
+    }
+
+    private <T> T sendAuthorizedRequest(AuthFunction<MultiValueMap<String, String>, T> func) throws AuthCreationException {
+        try {
+            var accessToken = getAccessToken();
+            var header = CollectionUtils.toMultiValueMap(Map.of("Authorization", List.of("Bearer " + accessToken)));
+            return func.apply(header);
+        } catch (JsonProcessingException | URISyntaxException e) {
+            throw new AuthCreationException(e);
+        }
+    }
+
+    private void sendAuthorizedRequest(AuthSupplier<MultiValueMap<String, String>> func) throws AuthCreationException {
+        try {
+            var accessToken = getAccessToken();
+            var header = CollectionUtils.toMultiValueMap(Map.of("Authorization", List.of("Bearer " + accessToken)));
+            func.apply(header);
+        } catch (JsonProcessingException | URISyntaxException e) {
+            throw new AuthCreationException(e);
+        }
+    }
+
+    @FunctionalInterface
+    interface AuthFunction <T, R> {
+        R apply (T args) throws URISyntaxException, JsonProcessingException;
+    }
+
+    @FunctionalInterface
+    interface AuthSupplier <T> {
+        void apply (T args) throws URISyntaxException, JsonProcessingException;
     }
 
     public record CreateUserRequest(@JsonProperty("connection") String connection,

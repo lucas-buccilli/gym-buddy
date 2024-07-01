@@ -1,7 +1,10 @@
 package com.example.gymbuddy.integration;
 
+import com.example.gymbuddy.implementation.services.EmailService;
 import com.example.gymbuddy.implementation.utils.AuthUtils;
+import com.example.gymbuddy.implementation.validators.requests.MemberRequestValidator;
 import com.example.gymbuddy.implementation.values.Auth0Values;
+import com.example.gymbuddy.implementation.values.MailSenderValues;
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
 import com.example.gymbuddy.infrastructure.models.AuthRoles;
 import com.example.gymbuddy.infrastructure.models.PageRequest;
@@ -12,12 +15,14 @@ import com.example.gymbuddy.infrastructure.models.dtos.MemberDto;
 import com.example.gymbuddy.infrastructure.models.dtos.UserReportDto;
 import com.example.gymbuddy.infrastructure.models.requests.MemberRequests;
 import com.example.gymbuddy.infrastructure.services.IAuthService;
+import com.example.gymbuddy.infrastructure.services.IEmailService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -54,6 +59,12 @@ public abstract class IntegrationBase {
     IAuthService authService;
     @MockBean
     Auth0Values auth0Values;
+    @MockBean
+    IEmailService emailService;
+    @MockBean
+    JavaMailSender javaMailSender;
+    @MockBean
+    MailSenderValues mailSenderValues;
 
     public final Member Member = new Member();
     public final Machine Machine = new Machine();

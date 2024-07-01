@@ -14,6 +14,10 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.MultiValueMap;
 
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,5 +102,23 @@ class Auth0ServiceTest {
     void createUserShouldThrowException() throws JsonProcessingException{
         when(restService.post(argThat((String url) -> url != null && url.contains("/oauth/token")), any(), any(), any())).thenThrow(new JsonProcessingException(""){});
         assertThrows(AuthCreationException.class, () -> auth0Service.createUser("user", "List.of()"));
+    }
+
+    @Test
+    void searchByEmail() throws JsonProcessingException, AuthCreationException {
+        var accessToken = "accessToken";
+        var email = "email@email.com";
+        ArgumentCaptor<MultiValueMap<String, String>> headerCaptor = ArgumentCaptor.forClass(MultiValueMap.class);
+
+        when(restService.post(argThat((String url) -> url != null && url.contains("/oauth/token")), any(), any(), any())).thenReturn(new Auth0Service.TokenResponse(accessToken));
+        when(restService.get(argThat((URI uri) -> uri != null && uri.toString().contains("/api/v2/users-by-email?email=")), any(), ArgumentMatchers.<Class<Object>>any())).thenReturn(new Object[]{new Object()});
+
+        auth0Service.searchUsersByEmail(email);
+
+        verify(restService).get(argThat((URI uri) -> uri.toString().contains("/api/v2/users-by-email?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8))), headerCaptor.capture(), eq(Object[].class));
+
+        assertNotNull(headerCaptor.getValue());
+        assertNotNull(headerCaptor.getValue().get("Authorization"));
+        assertEquals("Bearer " + accessToken, headerCaptor.getValue().get("Authorization").get(0));
     }
 }
