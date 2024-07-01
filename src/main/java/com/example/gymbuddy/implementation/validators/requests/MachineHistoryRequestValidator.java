@@ -26,6 +26,5 @@ public class MachineHistoryRequestValidator {
         }
         return validationErrors;
     }
-
     public record AddMachineHistoryRequest(Integer memberId, Integer machineId){}
 }

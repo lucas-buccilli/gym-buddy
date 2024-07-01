@@ -1,6 +1,7 @@
 package com.example.gymbuddy.implementation.services;
 
 import com.example.gymbuddy.infrastructure.daos.IMemberDao;
+import com.example.gymbuddy.infrastructure.exceptions.AuthApiException;
 import com.example.gymbuddy.infrastructure.exceptions.AuthCreationException;
 import com.example.gymbuddy.infrastructure.exceptions.MemberNotFoundException;
 import com.example.gymbuddy.infrastructure.models.AuthRoles;
@@ -35,6 +36,9 @@ public class MemberServiceTest {
     @Mock
     IAuthService authService;
 
+    @Mock
+    EmailService emailService;
+
     @InjectMocks
     MemberService memberService;
 
@@ -51,7 +55,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    void addMember() throws AuthCreationException {
+    void addMember() throws AuthApiException {
         var memberDto = MemberDto.builder().firstName("Sam").build();
         String userId = "userid";
 
